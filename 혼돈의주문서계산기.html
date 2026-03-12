@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>주문서 효율 계산기 - 레벨업만이 살길</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #f8fafc; 
+            color: #1e293b;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .scroll-card { 
+            border-radius: 1.5rem; 
+            background: white; 
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .chaos-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .chaos-input:focus {
+            outline: none;
+            border-color: #f97316;
+            background-color: #fff7ed;
+        }
+
+        .chaos-input:disabled {
+            background-color: #f1f5f9;
+            color: #cbd5e1;
+            cursor: not-allowed;
+            border-color: #f1f5f9;
+        }
+
+        .tab-active {
+            color: #f97316;
+            border-bottom: 3px solid #f97316;
+            background-color: #fff7ed;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.3s ease-out; }
+
+        input::-webkit-inner-spin-button,
+        input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-3xl mx-auto">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-black text-slate-800 flex items-center justify-center gap-2">
+            <span class="text-4xl">📜</span> 주문서 효율 계산기
+        </h1>
+        <p class="text-slate-500 text-sm font-bold mt-2 uppercase tracking-widest">Chaos Scroll Efficiency Tool</p>
+    </header>
+
+    <div class="scroll-card">
+        <!-- Mode Tabs -->
+        <div class="flex border-b border-slate-100">
+            <button onclick="switchChaosMode('awakening')" id="tab-awakening" class="flex-1 py-5 text-base font-black transition-all tab-active">
+                ✨ 초월 지역 전용
+            </button>
+            <button onclick="switchChaosMode('normal')" id="tab-normal" class="flex-1 py-5 text-base font-black text-slate-400 transition-all">
+                🌿 일반 지역 전용
+            </button>
+        </div>
+
+        <!-- Info Header -->
+        <div class="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+            <p class="text-[11px] font-bold text-blue-600">현재 공격력을 입력하면 최대치 대비 효율을 계산합니다.</p>
+            <button onclick="resetAll()" class="text-[11px] font-black text-red-500 hover:underline">모두 초기화</button>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50/80">
+                    <tr class="text-[11px] text-slate-500 font-black uppercase tracking-tighter">
+                        <th class="px-4 py-4 text-center w-1/4">지역 (기본수치)</th>
+                        <th class="px-4 py-4 text-center w-1/4">현재 공격력</th>
+                        <th class="px-4 py-4 text-center w-1/4">최대 수치</th>
+                        <th class="px-4 py-4 text-center w-1/4">달성 효율 (%)</th>
+                    </tr>
+                </thead>
+                <tbody id="chaosTable" class="text-sm divide-y divide-slate-100">
+                    <!-- Rows injected via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Legend -->
+        <div class="p-6 bg-slate-900 text-white">
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1">90% 이상 효율</p>
+                    <p class="text-orange-400 font-black">졸업급 옵션</p>
+                </div>
+                <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1">기본 수치 미만</p>
+                    <p class="text-slate-300 font-black">0% 처리</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-8 text-center">
+        <p class="text-xs text-slate-400 font-medium italic">"수정이 필요한 데이터는 개발자(초보)에게 알려주세요."</p>
+    </footer>
+</div>
+
+<script>
+    const CHAOS_DATA = {
+        awakening: [
+            { region: "리스항구", base: 1500, max: 3890 },
+            { region: "헤네시스", base: 1875, max: 4863 },
+            { region: "엘리니아", base: 2250, max: 5835 },
+            { region: "커닝시티", base: 2625, max: 6808 },
+            { region: "페리온", base: 630, max: 1634, disabled: true },
+            { region: "슬리피우드", base: 3075, max: 7975 },
+            { region: "골드비치", base: 3300, max: 8559 },
+            { region: "커닝스퀘어", base: 795, max: 2062, disabled: true },
+            { region: "무릉도원", base: 870, max: 2256, disabled: true },
+            { region: "황금사원", base: 945, max: 2451, disabled: true }
+        ],
+        normal: [
+            { region: "폐광", base: 450, max: 1167 },
+            { region: "지구방위본부", base: 495, max: 1283 },
+            { region: "미나르숲", base: 540, max: 1400 },
+            { region: "미나르계곡", base: 585, max: 1517 },
+            { region: "협곡", base: 630, max: 1634 },
+            { region: "아랫마을", base: 670, max: 1737 },
+            { region: "니할사막", base: 720, max: 1867 },
+            { region: "마가티아", base: 795, max: 2062 },
+            { region: "무릉도원", base: 870, max: 2256 },
+            { region: "황금사원", base: 945, max: 2451 },
+            { region: "테마파크", base: 1020, max: 2645 },
+            { region: "사자왕의성", base: 1110, max: 2879 },
+            { region: "콜로서스", base: 1200, max: 3112 },
+            { region: "신전", base: 1290, max: 3345 },
+            { region: "레헬른", base: 1425, max: 3696 },
+            { region: "츄츄아일랜드", base: 1575, max: 4085 },
+            { region: "미래의문", base: 1725, max: 4474 },
+            { region: "소멸의여로", base: 1875, max: 4863 },
+            { region: "아르카나", base: 2100, max: 5446 },
+            { region: "모라스", base: 2325, max: 6030 },
+            { region: "에스페라", base: 2550, max: 6614 },
+            { region: "문브릿지", base: 2775, max: 7197 },
+            { region: "고통의미궁", base: 3000, max: 7781 },
+            { region: "리멘", base: 3300, max: 8559 }
+        ]
+    };
+
+    let currentMode = 'awakening';
+
+    function switchChaosMode(mode) {
+        currentMode = mode;
+        
+        // Tab UI update
+        const tabAwake = document.getElementById('tab-awakening');
+        const tabNormal = document.getElementById('tab-normal');
+        
+        if (mode === 'awakening') {
+            tabAwake.className = "flex-1 py-5 text-base font-black transition-all tab-active";
+            tabNormal.className = "flex-1 py-5 text-base font-black text-slate-400 transition-all";
+        } else {
+            tabNormal.className = "flex-1 py-5 text-base font-black transition-all tab-active !text-blue-600 !bg-blue-50 !border-blue-600";
+            tabAwake.className = "flex-1 py-5 text-base font-black text-slate-400 transition-all";
+        }
+        
+        renderTable();
+    }
+
+    function renderTable() {
+        const data = CHAOS_DATA[currentMode];
+        const tbody = document.getElementById('chaosTable');
+        tbody.innerHTML = '';
+
+        data.forEach((item, idx) => {
+            const isDisabled = !!item.disabled;
+            const row = document.createElement('tr');
+            row.className = "animate-fade";
+            if (isDisabled) row.className += " opacity-40 grayscale bg-slate-50";
+
+            row.innerHTML = `
+                <td class="px-4 py-4 text-center bg-slate-50/30">
+                    <div class="font-bold text-slate-700 text-[13px]">${item.region}</div>
+                    <div class="text-[10px] text-slate-400 font-semibold">(${isDisabled ? '미구현' : item.base.toLocaleString()})</div>
+                </td>
+                <td class="px-4 py-4 text-center">
+                    <input type="number" 
+                           id="input-${idx}" 
+                           class="chaos-input" 
+                           placeholder="${isDisabled ? '-' : '입력'}" 
+                           ${isDisabled ? 'disabled' : ''} 
+                           oninput="calculateEfficiency(${idx}, ${item.base}, ${item.max})">
+                </td>
+                <td class="px-4 py-4 text-center">
+                    <span class="font-bold text-slate-500 text-[12px]">${isDisabled ? 'N/A' : item.max.toLocaleString()}</span>
+                </td>
+                <td class="px-4 py-4 text-center">
+                    <span id="res-${idx}" class="font-black text-base ${isDisabled ? 'text-slate-300' : 'text-slate-400'}">0%</span>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function calculateEfficiency(idx, base, max) {
+        const inputEl = document.getElementById(`input-${idx}`);
+        const resEl = document.getElementById(`res-${idx}`);
+        const val = parseInt(inputEl.value) || 0;
+
+        if (val < base) {
+            resEl.innerText = "0%";
+            resEl.className = "font-black text-base text-slate-400";
+            return;
+        }
+
+        const efficiency = Math.min(100, ((val - base) / (max - base)) * 100);
+        resEl.innerText = Math.floor(efficiency) + "%";
+
+        // Highlight based on efficiency
+        if (efficiency >= 90) {
+            resEl.className = "font-black text-base text-orange-500 drop-shadow-sm";
+        } else if (efficiency >= 50) {
+            resEl.className = "font-black text-base text-blue-600";
+        } else {
+            resEl.className = "font-black text-base text-slate-600";
+        }
+    }
+
+    function resetAll() {
+        if(confirm("모든 입력값을 초기화하시겠습니까?")) {
+            renderTable();
+        }
+    }
+
+    // Initial Render
+    window.onload = renderTable;
+</script>
+
+</body>
+</html>
+
