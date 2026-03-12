@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>레벨업만이 살길 - 통합 효율 및 환생 플래너 V4.6</title>
+    <title>레벨업만이 살길 - 통합 효율 및 환생 플래너 V4.6 Ultra</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 외부 경험치 데이터 연동 (exp.js 내 window.expData.exp 배열 사용) -->
     <script src="exp.js"></script>
@@ -69,6 +69,19 @@
         .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
         
         .limit-input { background-color: #fff7ed; border-color: #fdba74; }
+
+        /* EPM 입력란 시인성 강화 */
+        .epm-grid input {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 12px 4px;
+            border-width: 2.5px;
+        }
+        .epm-gyeong { background-color: #fef2f2 !important; border-color: #fecaca !important; color: #dc2626; }
+        .epm-jo { background-color: #eff6ff !important; border-color: #bfdbfe !important; color: #2563eb; }
+        .epm-eok { background-color: #f0fdf4 !important; border-color: #bbf7d0 !important; color: #16a34a; }
+        .epm-man { background-color: #fdfaf1 !important; border-color: #fef3c7 !important; color: #d97706; }
     </style>
 </head>
 <body class="p-4 md:p-8 pb-32">
@@ -150,24 +163,34 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-500 mb-3 uppercase">분당 기본 경험치 (EPM)</label>
-                            <div class="grid grid-cols-4 gap-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-3 uppercase flex items-center gap-2">
+                                📊 분당 경험치 (EPM) 상세 입력
+                            </label>
+                            <div class="grid grid-cols-4 gap-2 mb-6 epm-grid">
                                 <div class="relative">
-                                    <input type="number" id="epmGyeong" value="0" inputmode="numeric" class="custom-field !px-1 text-center text-xs">
-                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-300">경</span>
+                                    <input type="number" id="epmGyeong" value="0" inputmode="numeric" class="custom-field epm-gyeong">
+                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-red-400">경</span>
                                 </div>
                                 <div class="relative">
-                                    <input type="number" id="epmJo" value="1" inputmode="numeric" class="custom-field !px-1 text-center text-xs">
-                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-300">조</span>
+                                    <input type="number" id="epmJo" value="1" inputmode="numeric" class="custom-field epm-jo">
+                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-blue-400">조</span>
                                 </div>
                                 <div class="relative">
-                                    <input type="number" id="epmEok" value="0" inputmode="numeric" class="custom-field !px-1 text-center text-xs">
-                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-300">억</span>
+                                    <input type="number" id="epmEok" value="0" inputmode="numeric" class="custom-field epm-eok">
+                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-green-500">억</span>
                                 </div>
                                 <div class="relative">
-                                    <input type="number" id="epmMan" value="0" inputmode="numeric" class="custom-field !px-1 text-center text-xs">
-                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black text-slate-300">만</span>
+                                    <input type="number" id="epmMan" value="0" inputmode="numeric" class="custom-field epm-man">
+                                    <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-orange-400">만</span>
                                 </div>
+                            </div>
+                            <!-- 강화된 EPM 결과 요약 창 -->
+                            <div class="bg-white rounded-2xl p-4 border-2 border-slate-100 shadow-inner mt-4">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex justify-between items-center">
+                                    <span>현재 입력된 총 EPM</span>
+                                    <span class="text-blue-500">TOTAL EPM</span>
+                                </p>
+                                <p id="resEpmSummary" class="text-lg font-black text-slate-800 leading-tight">0</p>
                             </div>
                         </div>
                     </div>
@@ -247,7 +270,6 @@
 
             <!-- TAB: Optimizer -->
             <div id="content-optimizer" class="hidden animate-fade space-y-6">
-                <!-- Optimizer UI remains the same -->
                 <div class="maple-card p-8 border-l-8 border-l-orange-500 bg-orange-50/20">
                     <h3 class="text-lg font-black text-slate-800 mb-2">시간 내 환생 최대 효율 분석</h3>
                     <p class="text-xs text-slate-500 font-bold mb-6">입력한 제한 시간 동안 설정한 환생 횟수를 모두 소모할 수 있는 최적의 레벨을 찾습니다.</p>
@@ -287,7 +309,6 @@
 
             <!-- TAB: Planner -->
             <div id="content-planner" class="hidden animate-fade">
-                <!-- Planner UI remains the same -->
                 <div class="maple-card p-8 border-l-8 border-l-emerald-500">
                     <div class="mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-6">
                         <div class="flex-1">
@@ -352,10 +373,6 @@
     const T_STEP_UNIT = 25000, P_STEP_UNIT = 100000;
     let activeBossTime = 0;
 
-    /**
-     * [exp.js 데이터 연동 로직]
-     * lv를 인덱스로 사용하여 정확한 경험치를 가져옵니다.
-     */
     function getExpForLevel(lv) {
         if (lv <= 0) return 0n;
         try {
@@ -367,51 +384,31 @@
                     return BigInt(cleanVal);
                 }
             }
-        } catch (e) {
-            console.error("Exp lookup error:", e);
-        }
+        } catch (e) { console.error("Exp lookup error:", e); }
         return BigInt(Math.floor(Math.pow(lv, 2.8) * 500000)); 
     }
 
-    /**
-     * [경(京) 단위 추가된 포맷터]
-     */
     function formatBigInt(val) {
         let bVal = BigInt(val);
         if (bVal === 0n) return "0";
-        
         let result = "";
-        
-        const gyeong = bVal / 10000000000000000n; // 10^16
-        bVal %= 10000000000000000n;
-        
-        const jo = bVal / 1000000000000n;
-        bVal %= 1000000000000n;
-        
-        const eok = bVal / 100000000n;
-        bVal %= 100000000n;
-        
+        const gyeong = bVal / 10000000000000000n; bVal %= 10000000000000000n;
+        const jo = bVal / 1000000000000n; bVal %= 1000000000000n;
+        const eok = bVal / 100000000n; bVal %= 100000000n;
         const man = bVal / 10000n;
-        const won = bVal % 10000n;
-
         if (gyeong > 0n) result += gyeong + "경 ";
         if (jo > 0n) result += jo + "조 ";
         if (eok > 0n) result += eok + "억 ";
         if (man > 0n) result += man + "만 ";
-        if (won > 0n && result === "") result += won; 
-
         return result.trim() || "0";
     }
 
     function formatTime(totalSeconds) {
         if (totalSeconds <= 0 || !isFinite(totalSeconds)) return "0초";
         let seconds = Math.round(totalSeconds);
-        const days = Math.floor(seconds / (24 * 3600));
-        seconds %= (24 * 3600);
-        const hours = Math.floor(seconds / 3600);
-        seconds %= 3600;
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
+        const days = Math.floor(seconds / (24 * 3600)); seconds %= (24 * 3600);
+        const hours = Math.floor(seconds / 3600); seconds %= 3600;
+        const minutes = Math.floor(seconds / 60); const remainingSeconds = seconds % 60;
         let res = [];
         if (days > 0) res.push(`${days}일`);
         if (hours > 0) res.push(`${hours}시간`);
@@ -443,22 +440,21 @@
         const rebirthCount = parseInt(document.getElementById('curRebirthCount').value) || 1;
         const limitMins = (parseInt(document.getElementById('limitHour').value) || 0) * 60 + (parseInt(document.getElementById('limitMin').value) || 0);
 
-        // [경 단위 입력 대응]
-        const gyeongInput = BigInt(document.getElementById('epmGyeong').value || 0) * 10000000000000000n;
-        const joInput = BigInt(document.getElementById('epmJo').value || 0) * 1000000000000n;
-        const eokInput = BigInt(document.getElementById('epmEok').value || 0) * 100000000n;
-        const manInput = BigInt(document.getElementById('epmMan').value || 0) * 10000n;
-        const epmBase = Number(gyeongInput + joInput + eokInput + manInput);
+        const gVal = BigInt(document.getElementById('epmGyeong').value || 0) * 10000000000000000n;
+        const jVal = BigInt(document.getElementById('epmJo').value || 0) * 1000000000000n;
+        const eVal = BigInt(document.getElementById('epmEok').value || 0) * 100000000n;
+        const mVal = BigInt(document.getElementById('epmMan').value || 0) * 10000n;
+        const totalEpmBigInt = gVal + jVal + eVal + mVal;
+        const epmBase = Number(totalEpmBigInt);
         
+        // EPM 요약창 업데이트 (강조된 스타일 적용)
+        document.getElementById('resEpmSummary').innerText = formatBigInt(totalEpmBigInt);
+
         const bossWeight = activeBossTime > 0 ? ((activeBossTime * 1.5) + (3600 - activeBossTime)) / 3600 : 1;
         const actualEps = (epmBase / 60) * bossWeight;
 
         let totalExpNeededOnce = 0n;
-        if (curLv < tarLv) {
-            for (let i = curLv; i < tarLv; i++) {
-                totalExpNeededOnce += getExpForLevel(i);
-            }
-        }
+        if (curLv < tarLv) { for (let i = curLv; i < tarLv; i++) { totalExpNeededOnce += getExpForLevel(i); } }
         
         const totalExpNeededAll = totalExpNeededOnce * BigInt(rebirthCount);
         const onceSeconds = actualEps > 0 ? (Number(totalExpNeededOnce) / actualEps) : 0;
@@ -482,15 +478,13 @@
                 <td class="px-6 py-4 text-right font-black text-indigo-600">${formatTime(onceSeconds * rebirthCount)}</td>
             </tr>`;
 
-        // 최적화
         const allowedOnceSeconds = (limitMins * 60) / rebirthCount;
         let optLv = curLv, optExpTotal = 0n;
         if (actualEps > 0 && limitMins > 0) {
             for (let i = curLv; i < 2000; i++) {
                 const nxt = getExpForLevel(i);
                 if (Number(optExpTotal + nxt) / actualEps > allowedOnceSeconds) break;
-                optExpTotal += nxt; 
-                optLv = i + 1;
+                optExpTotal += nxt; optLv = i + 1;
             }
         }
         document.getElementById('optLimitTime').innerText = formatTime(limitMins * 60);
@@ -500,7 +494,6 @@
         document.getElementById('optTotalSp').innerText = (Math.floor(optLv * 3 * spBuff) * rebirthCount).toLocaleString() + " SP";
         document.getElementById('optTotalTime').innerText = formatTime((Number(optExpTotal) / actualEps) * rebirthCount);
 
-        // 플래너
         const getSumCost = (lv, unit) => (lv * (lv + 1) / 2) * unit;
         const getJobAcc = (idx) => { let s=0; for(let i=0; i<=idx; i++) s+=JOBS[i].cost; return s; };
         const getFullCost = (prefix) => getJobAcc(parseInt(document.getElementById(prefix+'Job').value)) + getSumCost(parseInt(document.getElementById(prefix+'T').value), T_STEP_UNIT) + getSumCost(parseInt(document.getElementById(prefix+'P').value), P_STEP_UNIT);
