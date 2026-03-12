@@ -10,7 +10,7 @@
         
         body { 
             font-family: 'Pretendard', sans-serif; 
-            background-color: #f1f5f9; 
+            background-color: #f8fafc; 
             color: #1e293b;
             -webkit-tap-highlight-color: transparent;
         }
@@ -18,32 +18,30 @@
         .scroll-card { 
             border-radius: 1.5rem; 
             background: white; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
             overflow: hidden;
         }
 
         .chaos-input {
             width: 100%;
-            padding: 12px 8px;
+            padding: 10px;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 10px;
             text-align: center;
-            font-size: 1.1rem;
-            font-weight: 800;
+            font-size: 0.95rem;
+            font-weight: 700;
             transition: all 0.2s;
-            color: #0f172a;
         }
 
         .chaos-input:focus {
             outline: none;
             border-color: #f97316;
             background-color: #fff7ed;
-            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
         }
 
         .chaos-input:disabled {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             color: #cbd5e1;
             cursor: not-allowed;
             border-color: #f1f5f9;
@@ -51,74 +49,78 @@
 
         .tab-active {
             color: #f97316;
-            border-bottom: 4px solid #f97316;
-            background-color: #fffaf5;
+            border-bottom: 3px solid #f97316;
+            background-color: #fff7ed;
         }
-        
+
         .tab-active-normal {
             color: #2563eb;
-            border-bottom: 4px solid #2563eb;
+            border-bottom: 3px solid #2563eb;
             background-color: #eff6ff;
         }
 
+        .base-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-fade { animation: fadeIn 0.3s ease-out; }
 
         input::-webkit-inner-spin-button,
         input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        
-        .stat-badge {
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-        }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-<div class="max-w-4xl mx-auto">
-    <header class="text-center mb-10">
-        <h1 class="text-3xl font-black text-slate-800 flex items-center justify-center gap-3">
-            <span class="text-4xl drop-shadow-sm">📜</span> 주문서 효율 계산기
+<div class="max-w-3xl mx-auto">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-black text-slate-800 flex items-center justify-center gap-2">
+            <span class="text-4xl">📜</span> 주문서 효율 계산기
         </h1>
-        <div class="inline-block px-4 py-1 mt-3 rounded-full bg-slate-200 text-slate-600 text-[10px] font-black uppercase tracking-[0.2em]">
-            Chaos Scroll Efficiency Professional
-        </div>
+        <p class="text-slate-500 text-sm font-bold mt-2 uppercase tracking-widest">Chaos Scroll Efficiency Tool</p>
     </header>
 
     <div class="scroll-card">
         <!-- Mode Tabs -->
-        <div class="flex border-b-2 border-slate-100">
-            <button onclick="switchChaosMode('awakening')" id="tab-awakening" class="flex-1 py-5 text-lg font-black transition-all tab-active">
-                ✨ 초월 지역
+        <div class="flex border-b border-slate-100">
+            <button onclick="switchChaosMode('awakening')" id="tab-awakening" class="flex-1 py-5 text-base font-black transition-all tab-active">
+                ✨ 초월 지역 전용
             </button>
-            <button onclick="switchChaosMode('normal')" id="tab-normal" class="flex-1 py-5 text-lg font-black text-slate-400 transition-all">
-                🌿 일반 지역
+            <button onclick="switchChaosMode('normal')" id="tab-normal" class="flex-1 py-5 text-base font-black text-slate-400 transition-all">
+                🌿 일반 지역 전용
             </button>
         </div>
 
         <!-- Info Header -->
-        <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+        <div class="p-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <span class="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
-                <p class="text-xs font-bold text-slate-600">현재 공격력을 입력하면 효율이 자동 계산됩니다.</p>
+                <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                <p class="text-[11px] font-bold text-slate-700">
+                    <span class="text-orange-600">[안내]</span> <span class="text-blue-600">최상급 등급</span> 수치를 기준으로 효율을 계산합니다.
+                </p>
             </div>
-            <button onclick="resetAll()" class="px-3 py-1 rounded-lg bg-red-50 text-[11px] font-black text-red-500 hover:bg-red-100 transition-colors">전체 초기화</button>
+            <button onclick="resetAll()" class="text-[11px] font-black text-red-500 hover:underline">모두 초기화</button>
         </div>
 
         <!-- Table Container -->
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-slate-50/80">
-                    <tr class="text-[12px] text-slate-400 font-black uppercase">
-                        <th class="px-6 py-4 text-center">지역 정보</th>
-                        <th class="px-4 py-4 text-center w-32">기본 / 최대</th>
-                        <th class="px-4 py-4 text-center w-40">현재 수치 입력</th>
-                        <th class="px-6 py-4 text-center">달성 효율 (%)</th>
+                    <tr class="text-[11px] text-slate-500 font-black uppercase tracking-tighter">
+                        <th class="px-4 py-4 text-center w-1/4">지역 정보</th>
+                        <th class="px-4 py-4 text-center w-1/4">현재 공격력</th>
+                        <th class="px-4 py-4 text-center w-1/4">최대 수치</th>
+                        <th class="px-4 py-4 text-center w-1/4">달성 효율 (%)</th>
                     </tr>
                 </thead>
                 <tbody id="chaosTable" class="text-sm divide-y divide-slate-100">
@@ -128,36 +130,22 @@
         </div>
 
         <!-- Legend -->
-        <div class="p-8 bg-slate-900 text-white">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                    <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 text-xl font-black">!</div>
-                    <div>
-                        <p class="text-[10px] text-slate-400 font-bold">90% 이상</p>
-                        <p class="text-orange-400 font-black text-lg">졸업급 옵션</p>
-                    </div>
+        <div class="p-6 bg-slate-900 text-white">
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1">90% 이상 효율</p>
+                    <p class="text-orange-400 font-black text-lg">졸업급 옵션</p>
                 </div>
-                <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xl font-black">✓</div>
-                    <div>
-                        <p class="text-[10px] text-slate-400 font-bold">50% 이상</p>
-                        <p class="text-blue-400 font-black text-lg">유효 옵션</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                    <div class="w-10 h-10 rounded-full bg-slate-500/20 flex items-center justify-center text-slate-400 text-xl font-black">?</div>
-                    <div>
-                        <p class="text-[10px] text-slate-400 font-bold">기본 미달</p>
-                        <p class="text-slate-300 font-black text-lg">0% 처리</p>
-                    </div>
+                <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-[10px] text-slate-400 font-bold mb-1">계산 기준</p>
+                    <p class="text-slate-300 font-black text-lg">최상급 등급 기준</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="mt-10 text-center space-y-2">
-        <p class="text-xs text-slate-400 font-bold">© 2024 주문서 효율 계산기</p>
-        <p class="text-[11px] text-slate-400 font-medium italic">"수정이 필요한 데이터는 개발자(초보)에게 알려주세요."</p>
+    <footer class="mt-8 text-center">
+        <p class="text-xs text-slate-400 font-medium italic">"수정이 필요한 데이터는 개발자(초보)에게 알려주세요."</p>
     </footer>
 </div>
 
@@ -212,11 +200,11 @@
         const tabNormal = document.getElementById('tab-normal');
         
         if (mode === 'awakening') {
-            tabAwake.className = "flex-1 py-5 text-lg font-black transition-all tab-active";
-            tabNormal.className = "flex-1 py-5 text-lg font-black text-slate-400 transition-all";
+            tabAwake.className = "flex-1 py-5 text-base font-black transition-all tab-active";
+            tabNormal.className = "flex-1 py-5 text-base font-black text-slate-400 transition-all";
         } else {
-            tabNormal.className = "flex-1 py-5 text-lg font-black transition-all tab-active-normal";
-            tabAwake.className = "flex-1 py-5 text-lg font-black text-slate-400 transition-all";
+            tabNormal.className = "flex-1 py-5 text-base font-black transition-all tab-active-normal";
+            tabAwake.className = "flex-1 py-5 text-base font-black text-slate-400 transition-all";
         }
         
         renderTable();
@@ -230,40 +218,30 @@
         data.forEach((item, idx) => {
             const isDisabled = !!item.disabled;
             const row = document.createElement('tr');
-            row.className = "animate-fade hover:bg-slate-50/50 transition-colors";
+            row.className = "animate-fade";
             if (isDisabled) row.className += " opacity-40 grayscale bg-slate-50";
 
             row.innerHTML = `
-                <td class="px-6 py-5">
-                    <div class="font-black text-slate-800 text-base mb-1">${item.region}</div>
-                    <div class="flex gap-2">
-                        <span class="stat-badge bg-slate-100 text-slate-500">Lv. Area</span>
+                <td class="px-4 py-4 text-center bg-slate-50/30">
+                    <div class="font-bold text-slate-700 text-[13px] mb-1">${item.region}</div>
+                    <div class="base-badge">
+                        ${isDisabled ? '미구현' : '기본 ' + item.base.toLocaleString()}
                     </div>
                 </td>
-                <td class="px-4 py-5 text-center">
-                    <div class="flex flex-col items-center gap-1">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Base / Max</span>
-                        <div class="bg-slate-100 rounded-lg px-2 py-1 w-full max-w-[100px]">
-                            <div class="text-[13px] font-black text-blue-600 border-b border-slate-200 pb-0.5 mb-0.5">${isDisabled ? '-' : item.base.toLocaleString()}</div>
-                            <div class="text-[13px] font-black text-slate-400">${isDisabled ? '-' : item.max.toLocaleString()}</div>
-                        </div>
-                    </div>
-                </td>
-                <td class="px-4 py-5 text-center">
+                <td class="px-4 py-4 text-center">
                     <input type="number" 
                            id="input-${idx}" 
                            class="chaos-input" 
-                           placeholder="${isDisabled ? '미구현' : '입력'}" 
+                           placeholder="${isDisabled ? '-' : '입력'}" 
                            ${isDisabled ? 'disabled' : ''} 
                            oninput="calculateEfficiency(${idx}, ${item.base}, ${item.max})">
                 </td>
-                <td class="px-6 py-5 text-center">
-                    <div class="flex flex-col items-center">
-                        <span id="res-${idx}" class="text-2xl font-black ${isDisabled ? 'text-slate-300' : 'text-slate-200'} transition-all duration-300">0%</span>
-                        <div id="bar-bg-${idx}" class="w-16 h-1.5 bg-slate-100 rounded-full mt-2 overflow-hidden ${isDisabled ? 'hidden' : ''}">
-                            <div id="bar-fill-${idx}" class="h-full bg-slate-300 w-0 transition-all duration-500"></div>
-                        </div>
-                    </div>
+                <td class="px-4 py-4 text-center">
+                    <div class="text-[10px] text-slate-400 font-bold mb-1">최상급 등급 MAX</div>
+                    <span class="font-bold text-slate-600 text-[13px]">${isDisabled ? 'N/A' : item.max.toLocaleString()}</span>
+                </td>
+                <td class="px-4 py-4 text-center">
+                    <span id="res-${idx}" class="font-black text-lg ${isDisabled ? 'text-slate-300' : 'text-slate-300'}">0%</span>
                 </td>
             `;
             tbody.appendChild(row);
@@ -273,36 +251,27 @@
     function calculateEfficiency(idx, base, max) {
         const inputEl = document.getElementById(`input-${idx}`);
         const resEl = document.getElementById(`res-${idx}`);
-        const barFill = document.getElementById(`bar-fill-${idx}`);
         const val = parseInt(inputEl.value) || 0;
 
         if (val < base) {
             resEl.innerText = "0%";
-            resEl.className = "text-2xl font-black text-slate-300";
-            barFill.style.width = "0%";
-            barFill.className = "h-full bg-slate-300 transition-all";
+            resEl.className = "font-black text-lg text-slate-300";
             return;
         }
 
         const efficiency = Math.min(100, ((val - base) / (max - base)) * 100);
-        const displayVal = Math.floor(efficiency);
-        resEl.innerText = displayVal + "%";
-        barFill.style.width = efficiency + "%";
+        resEl.innerText = Math.floor(efficiency) + "%";
 
         if (efficiency >= 90) {
-            resEl.className = "text-2xl font-black text-orange-500 scale-110 drop-shadow-sm";
-            barFill.className = "h-full bg-orange-500 transition-all";
+            resEl.className = "font-black text-lg text-orange-500 drop-shadow-sm scale-110 inline-block transition-transform";
         } else if (efficiency >= 50) {
-            resEl.className = "text-2xl font-black text-blue-600";
-            barFill.className = "h-full bg-blue-500 transition-all";
+            resEl.className = "font-black text-lg text-blue-600";
         } else {
-            resEl.className = "text-2xl font-black text-slate-600";
-            barFill.className = "h-full bg-slate-400 transition-all";
+            resEl.className = "font-black text-lg text-slate-600";
         }
     }
 
     function resetAll() {
-        // 커스텀 모달 대신 사용되는 기존 confirm 유지
         if(confirm("모든 입력값을 초기화하시겠습니까?")) {
             renderTable();
         }
