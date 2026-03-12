@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>레벨업만이 살길 - 통합 효율 및 환생 플래너 V4.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 외부 경험치 데이터 연동 (exp.js 내 window.expData.exp 배열 사용) -->
+    <!-- 외부 경험치 데이터 연동 -->
     <script src="exp.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
@@ -126,7 +126,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-orange-500 mb-3 uppercase">⌛ 플레이 제한 시간 (최적화용)</label>
+                        <label class="block text-xs font-bold text-orange-500 mb-3 uppercase">⌛ 플레이 제한 시간</label>
                         <div class="grid grid-cols-2 gap-4">
                             <div class="relative">
                                 <input type="number" id="limitHour" value="1" min="0" inputmode="numeric" class="custom-field limit-input">
@@ -181,7 +181,6 @@
 
             <!-- TAB 1: Analytics -->
             <div id="content-analytics" class="space-y-6 animate-fade">
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="maple-card p-6 border-2 border-indigo-500 bg-indigo-50/30">
                         <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">⏱️ 총 환생 소요 시간 (목표 기준)</p>
@@ -195,7 +194,6 @@
                     </div>
                 </div>
 
-                <!-- 분석 요약 카드 -->
                 <div class="grid grid-cols-1 gap-4">
                     <div class="maple-card p-5 bg-gradient-to-br from-indigo-600 to-blue-700 text-white border-none flex justify-between items-center shadow-indigo-200 shadow-xl">
                         <div>
@@ -208,7 +206,6 @@
                         </div>
                     </div>
 
-                    <!-- 총 필요 경험치 카드 -->
                     <div class="maple-card p-6 border-2 border-orange-400 bg-orange-50/30">
                         <div class="flex justify-between items-start">
                             <div>
@@ -226,7 +223,7 @@
                 <div class="maple-card overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <h3 class="text-xs font-black text-slate-600 uppercase tracking-widest">설정 기준 데이터 상세</h3>
-                        <span id="targetRebirthLabel" class="text-[10px] px-2 py-1 bg-white border border-slate-200 rounded-md text-slate-400 font-bold">10회 환생 기준</span>
+                        <span id="targetRebirthLabel" class="text-[10px] px-2 py-1 bg-white border border-slate-200 rounded-md text-slate-400 font-bold">-회 환생 기준</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
@@ -244,12 +241,11 @@
                 </div>
             </div>
 
-            <!-- TAB: Optimizer -->
+            <!-- TAB 2: Optimizer -->
             <div id="content-optimizer" class="hidden animate-fade space-y-6">
-                <!-- Optimizer UI (이전 버전과 동일) -->
                 <div class="maple-card p-8 border-l-8 border-l-orange-500 bg-orange-50/20">
                     <h3 class="text-lg font-black text-slate-800 mb-2">시간 내 환생 최대 효율 분석</h3>
-                    <p class="text-xs text-slate-500 font-bold mb-6">입력한 제한 시간 동안 설정한 환생 횟수를 모두 소모할 수 있는 최적의 레벨을 찾습니다.</p>
+                    <p class="text-xs text-slate-500 font-bold mb-6">제한 시간 내에 설정한 환생 횟수를 모두 마칠 수 있는 최적 레벨을 찾습니다.</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                         <div class="p-4 bg-white rounded-xl shadow-sm border border-orange-100">
@@ -284,9 +280,8 @@
                 </div>
             </div>
 
-            <!-- TAB: Planner -->
+            <!-- TAB 3: Planner -->
             <div id="content-planner" class="hidden animate-fade">
-                <!-- Planner UI (이전 버전과 동일) -->
                 <div class="maple-card p-8 border-l-8 border-l-emerald-500">
                     <div class="mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-6">
                         <div class="flex-1">
@@ -328,7 +323,7 @@
                                 <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-400 uppercase">부족한 SP</span><span id="resRemain" class="text-lg font-black text-orange-400">0 SP</span></div>
                                 <div class="flex justify-between items-center"><span class="text-xs font-bold text-blue-400 uppercase">달성 후 잔여 SP</span><span id="resExtraSp" class="text-lg font-black text-blue-300">0 SP</span></div>
                                 <div class="h-px bg-slate-700"></div>
-                                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-400 uppercase">1회 환생 소요 시간 (목표 기준)</span><span id="resPlannerOnceTime" class="text-lg font-black text-indigo-300">0분 0초</span></div>
+                                <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-400 uppercase">1회 환생 소요 시간</span><span id="resPlannerOnceTime" class="text-lg font-black text-indigo-300">0분 0초</span></div>
                             </div>
                             <div class="w-full md:w-64 bg-white/5 rounded-2xl p-6 text-center border border-white/10">
                                 <p class="text-[10px] font-black text-slate-400 uppercase mb-2">성장 완료 예상 시간</p>
@@ -351,31 +346,35 @@
     const T_STEP_UNIT = 25000, P_STEP_UNIT = 100000;
     let activeBossTime = 0;
 
-    // [중요] 경험치 데이터 매칭 로직 보정 및 안전장치
+    /**
+     * [수정됨] exp.js 데이터 연동 로직
+     * 사진 상 인덱스 0번에 0이 있고, 1번에 100이 있는 것으로 보아 
+     * 레벨 숫자와 인덱스를 일치시키는 것이 정확합니다.
+     */
     function getExpForLevel(lv) {
         if (lv <= 0) return 0n;
         
-        // window.expData.exp 배열 접근 (exp.js 파일 내에 정의되어 있어야 함)
-        const source = window.expData;
-        if (source && source.exp && Array.isArray(source.exp)) {
-            // 인덱스 기반 매칭 (lv 1은 exp[0]에 해당한다고 가정)
-            const val = source.exp[lv - 1]; 
-            if (val !== undefined && val !== null) {
-                try {
-                    return BigInt(val);
-                } catch(e) {
-                    // 숫자가 너무 크거나 포맷이 이상할 경우 처리
-                    return BigInt(Math.floor(val));
+        try {
+            // 전역 변수 expData 확인
+            const source = window.expData || (typeof expData !== 'undefined' ? expData : null);
+            
+            if (source && source.exp && Array.isArray(source.exp)) {
+                // [변경] lv-1이 아닌 lv로 직접 접근하여 레벨별 정확한 경험치 매칭
+                const val = source.exp[lv]; 
+                
+                if (val !== undefined && val !== null) {
+                    const cleanVal = val.toString().replace(/,/g, '').split('.')[0];
+                    return BigInt(cleanVal);
                 }
             }
+        } catch (e) {
+            console.error("Exp lookup error:", e);
         }
         
-        // 데이터가 없을 경우를 대비한 가상 경험치 로직 (보통 1~2000 레벨 범위)
-        // 레벨이 올라갈수록 기하급수적으로 증가하는 임시 공식
-        return BigInt(Math.floor(Math.pow(lv, 3) * 1000000)); 
+        // 데이터 누락 시 기본 안전 공식
+        return BigInt(Math.floor(Math.pow(lv, 2.8) * 500000)); 
     }
 
-    // 큰 숫자를 조, 억, 만 단위로 변환
     function formatBigInt(val) {
         let bVal = BigInt(val);
         if (bVal === 0n) return "0";
@@ -439,15 +438,15 @@
         const rebirthCount = parseInt(document.getElementById('curRebirthCount').value) || 1;
         const limitMins = (parseInt(document.getElementById('limitHour').value) || 0) * 60 + (parseInt(document.getElementById('limitMin').value) || 0);
 
-        const jo = BigInt(document.getElementById('epmJo').value || 0) * 1000000000000n;
-        const eok = BigInt(document.getElementById('epmEok').value || 0) * 100000000n;
-        const man = BigInt(document.getElementById('epmMan').value || 0) * 10000n;
-        const epmBase = Number(jo + eok + man);
+        const joInput = BigInt(document.getElementById('epmJo').value || 0) * 1000000000000n;
+        const eokInput = BigInt(document.getElementById('epmEok').value || 0) * 100000000n;
+        const manInput = BigInt(document.getElementById('epmMan').value || 0) * 10000n;
+        const epmBase = Number(joInput + eokInput + manInput);
         
-        // 타임보스 효율 적용 (보스 타임 동안 1.5배 속도 가정)
-        const actualEps = (epmBase / 60) * (activeBossTime > 0 ? ((activeBossTime * 1.5) + (3600 - activeBossTime)) / 3600 : 1);
+        const bossWeight = activeBossTime > 0 ? ((activeBossTime * 1.5) + (3600 - activeBossTime)) / 3600 : 1;
+        const actualEps = (epmBase / 60) * bossWeight;
 
-        // [핵심] 경험치 합산 (BigInt 사용으로 정밀도 유지)
+        // 누적 경험치 계산 (curLv부터 tarLv-1까지의 필요 경험치 합산)
         let totalExpNeededOnce = 0n;
         if (curLv < tarLv) {
             for (let i = curLv; i < tarLv; i++) {
@@ -462,13 +461,11 @@
         // UI 업데이트
         document.getElementById('resTotalExpDisplay').innerText = formatBigInt(totalExpNeededAll);
         document.getElementById('resOnceExpDisplay').innerText = formatBigInt(totalExpNeededOnce);
-
         document.getElementById('resTotalTime').innerText = formatTime(onceSeconds * rebirthCount);
         document.getElementById('resTimeDesc').innerText = `회당 약 ${formatTime(onceSeconds)} 소요`;
         document.getElementById('totalSpExpectation').innerText = (onceSp * rebirthCount).toLocaleString() + " SP";
         document.getElementById('resSpDesc').innerText = `회당 ${onceSp.toLocaleString()} SP 획득`;
         document.getElementById('targetRebirthLabel').innerText = `${rebirthCount}회 환생 기준`;
-        
         document.getElementById('resTargetLevelDisplay').innerText = `Lv. ${tarLv}`;
         document.getElementById('resRebirthDisplay').innerText = `${rebirthCount} 회`;
 
@@ -480,7 +477,7 @@
                 <td class="px-6 py-4 text-right font-black text-indigo-600">${formatTime(onceSeconds * rebirthCount)}</td>
             </tr>`;
 
-        // Optimizer Logic
+        // 최적화 분석
         const allowedOnceSeconds = (limitMins * 60) / rebirthCount;
         let optLv = curLv, optExpTotal = 0n;
         if (actualEps > 0 && limitMins > 0) {
@@ -498,7 +495,7 @@
         document.getElementById('optTotalSp').innerText = (Math.floor(optLv * 3 * spBuff) * rebirthCount).toLocaleString() + " SP";
         document.getElementById('optTotalTime').innerText = formatTime((Number(optExpTotal) / actualEps) * rebirthCount);
 
-        // Planner Logic
+        // 플래너
         const getSumCost = (lv, unit) => (lv * (lv + 1) / 2) * unit;
         const getJobAcc = (idx) => { let s=0; for(let i=0; i<=idx; i++) s+=JOBS[i].cost; return s; };
         const getFullCost = (prefix) => getJobAcc(parseInt(document.getElementById(prefix+'Job').value)) + getSumCost(parseInt(document.getElementById(prefix+'T').value), T_STEP_UNIT) + getSumCost(parseInt(document.getElementById(prefix+'P').value), P_STEP_UNIT);
@@ -525,11 +522,11 @@
             const el = document.getElementById(f);
             if(el) data[f] = el.value;
         });
-        localStorage.setItem('level_up_planner_v4_exp_fixed', JSON.stringify(data));
+        localStorage.setItem('level_up_planner_v4_fixed_exp', JSON.stringify(data));
     }
 
     function loadFromLocal() {
-        const saved = localStorage.getItem('level_up_planner_v4_exp_fixed');
+        const saved = localStorage.getItem('level_up_planner_v4_fixed_exp');
         if (saved) {
             const data = JSON.parse(saved);
             Object.keys(data).forEach(k => {
@@ -557,28 +554,18 @@
 
     function resetInputs() {
         if(confirm("모든 데이터를 초기화하시겠습니까?")) {
-            localStorage.removeItem('level_up_planner_v4_exp_fixed');
+            localStorage.removeItem('level_up_planner_v4_fixed_exp');
             location.reload();
         }
     }
 
-    // 데이터 로드 보장 로직
     window.onload = () => {
         initSelects();
         loadFromLocal();
+        document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calculate));
         
-        // 모든 입력 요소에 이벤트 바인딩
-        document.querySelectorAll('input, select').forEach(el => {
-            el.addEventListener('input', calculate);
-        });
-
-        // exp.js가 로드되는 시간을 고려하여 지연 계산
-        setTimeout(() => {
-            if (!window.expData) {
-                console.warn("exp.js 데이터를 찾을 수 없어 기본 공식을 사용합니다.");
-            }
-            calculate();
-        }, 300);
+        // exp.js가 로드될 때까지 약간 대기 후 계산
+        setTimeout(calculate, 500);
     };
 </script>
 </body>
