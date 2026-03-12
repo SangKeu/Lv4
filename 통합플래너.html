@@ -194,9 +194,9 @@
                     </div>
                 </div>
 
-                <!-- 복구된 요약 카드 -->
+                <!-- 복구 및 고정된 요약 카드 -->
                 <div class="grid grid-cols-1 gap-4">
-                    <div class="maple-card p-5 bg-gradient-to-br from-indigo-600 to-blue-700 text-white border-none flex justify-between items-center">
+                    <div class="maple-card p-5 bg-gradient-to-br from-indigo-600 to-blue-700 text-white border-none flex justify-between items-center shadow-indigo-200 shadow-xl">
                         <div>
                             <p class="text-[10px] font-black text-white/70 uppercase tracking-widest">분석된 목표 레벨</p>
                             <p id="resTargetLevelDisplay" class="text-2xl font-black mt-1">Lv. -</p>
@@ -231,6 +231,7 @@
 
             <!-- TAB: Optimizer -->
             <div id="content-optimizer" class="hidden animate-fade space-y-6">
+                <!-- Optimizer Content ... -->
                 <div class="maple-card p-8 border-l-8 border-l-orange-500 bg-orange-50/20">
                     <h3 class="text-lg font-black text-slate-800 mb-2">시간 내 환생 최대 효율 분석</h3>
                     <p class="text-xs text-slate-500 font-bold mb-6">입력한 제한 시간 동안 설정한 환생 횟수를 모두 소모할 수 있는 최적의 레벨을 찾습니다.</p>
@@ -270,6 +271,7 @@
 
             <!-- TAB: Planner -->
             <div id="content-planner" class="hidden animate-fade">
+                <!-- Planner Content ... -->
                 <div class="maple-card p-8 border-l-8 border-l-emerald-500">
                     <div class="mb-8 p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-6">
                         <div class="flex-1">
@@ -344,14 +346,24 @@
         return 1000000000n;
     }
 
-    function formatTime(mins) {
-        if (mins <= 0 || !isFinite(mins)) return "0초";
-        const d = Math.floor(mins / 1440), h = Math.floor((mins % 1440) / 60), m = Math.floor(mins % 60), s = Math.round((mins * 60) % 60);
+    // 1분 60초와 같은 오류 수정을 위한 개선된 시간 포맷터
+    function formatTime(totalSeconds) {
+        if (totalSeconds <= 0 || !isFinite(totalSeconds)) return "0초";
+        
+        let seconds = Math.round(totalSeconds);
+        const days = Math.floor(seconds / (24 * 3600));
+        seconds %= (24 * 3600);
+        const hours = Math.floor(seconds / 3600);
+        seconds %= 3600;
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
         let res = [];
-        if (d > 0) res.push(`${d}일`);
-        if (h > 0) res.push(`${h}시간`);
-        if (m > 0) res.push(`${m}분`);
-        if (s > 0 || res.length === 0) res.push(`${s}초`);
+        if (days > 0) res.push(`${days}일`);
+        if (hours > 0) res.push(`${hours}시간`);
+        if (minutes > 0) res.push(`${minutes}분`);
+        if (remainingSeconds > 0 || res.length === 0) res.push(`${remainingSeconds}초`);
+        
         return res.join(" ");
     }
 
@@ -380,21 +392,25 @@
         const eok = BigInt(document.getElementById('epmEok').value || 0) * 100000000n;
         const man = BigInt(document.getElementById('epmMan').value || 0) * 10000n;
         const epmBase = Number(jo + eok + man);
+        
+        // 타임보스 적용 (1.5배 효율)
         const actualEpm = epmBase * (activeBossTime > 0 ? ((activeBossTime * 1.5) + (3600 - activeBossTime)) / 3600 : 1);
 
         // 1. Analytics
         let totalExp = 0n;
         for (let i = curLv; i < tarLv; i++) totalExp += getExpForLevel(i);
-        const onceMins = actualEpm > 0 ? (Number(totalExp) / actualEpm) : 0;
+        
+        // 분당 경험치를 초당 경험치로 환산하여 계산 (정밀도 향상)
+        const onceSeconds = actualEpm > 0 ? (Number(totalExp) / (actualEpm / 60)) : 0;
         const onceSp = Math.floor(tarLv * 3 * spBuff);
 
-        document.getElementById('resTotalTime').innerText = formatTime(onceMins * rebirthCount);
-        document.getElementById('resTimeDesc').innerText = `회당 약 ${formatTime(onceMins)} 소요`;
+        document.getElementById('resTotalTime').innerText = formatTime(onceSeconds * rebirthCount);
+        document.getElementById('resTimeDesc').innerText = `회당 약 ${formatTime(onceSeconds)} 소요`;
         document.getElementById('totalSpExpectation').innerText = (onceSp * rebirthCount).toLocaleString() + " SP";
         document.getElementById('resSpDesc').innerText = `회당 ${onceSp.toLocaleString()} SP 획득`;
         document.getElementById('targetRebirthLabel').innerText = `${rebirthCount}회 환생 기준`;
         
-        // 요약 정보 복구
+        // 하단 요약 카드 연동 데이터 반영
         document.getElementById('resTargetLevelDisplay').innerText = `Lv. ${tarLv}`;
         document.getElementById('resRebirthDisplay').innerText = `${rebirthCount} 회`;
 
@@ -403,25 +419,26 @@
                 <td class="px-6 py-4 font-bold text-slate-600">Lv.${curLv} → Lv.${tarLv}</td>
                 <td class="px-6 py-4 font-bold text-slate-500">${onceSp.toLocaleString()} SP</td>
                 <td class="px-6 py-4 text-emerald-600 font-bold">${(onceSp * rebirthCount).toLocaleString()} SP</td>
-                <td class="px-6 py-4 text-right font-black text-indigo-600">${formatTime(onceMins * rebirthCount)}</td>
+                <td class="px-6 py-4 text-right font-black text-indigo-600">${formatTime(onceSeconds * rebirthCount)}</td>
             </tr>`;
 
-        // 2. Optimizer
-        const allowedOnce = limitMins / rebirthCount;
+        // 2. Optimizer (시간 내 최적 레벨 찾기)
+        const allowedOnceSeconds = (limitMins * 60) / rebirthCount;
         let optLv = curLv, optExpTotal = 0n;
         if (actualEpm > 0 && limitMins > 0) {
             for (let i = curLv; i < 2000; i++) {
                 const nxt = getExpForLevel(i);
-                if (Number(optExpTotal + nxt) / actualEpm > allowedOnce) break;
+                // 초 단위로 비교
+                if (Number(optExpTotal + nxt) / (actualEpm / 60) > allowedOnceSeconds) break;
                 optExpTotal += nxt; optLv = i + 1;
             }
         }
-        document.getElementById('optLimitTime').innerText = formatTime(limitMins);
-        document.getElementById('optAllowedTimePer').innerText = formatTime(allowedOnce);
+        document.getElementById('optLimitTime').innerText = formatTime(limitMins * 60);
+        document.getElementById('optAllowedTimePer').innerText = formatTime(allowedOnceSeconds);
         document.getElementById('optRebirthCount').innerText = rebirthCount + "회";
         document.getElementById('optResultLevel').innerText = `Lv. ${optLv}`;
         document.getElementById('optTotalSp').innerText = (Math.floor(optLv * 3 * spBuff) * rebirthCount).toLocaleString() + " SP";
-        document.getElementById('optTotalTime').innerText = formatTime((Number(optExpTotal) / actualEpm) * rebirthCount);
+        document.getElementById('optTotalTime').innerText = formatTime((Number(optExpTotal) / (actualEpm / 60)) * rebirthCount);
 
         // 3. Planner
         const getSumCost = (lv, unit) => (lv * (lv + 1) / 2) * unit;
@@ -436,8 +453,8 @@
         document.getElementById('resRemain').innerText = remainSp.toLocaleString() + " SP";
         document.getElementById('resExtraSp').innerText = (pCnt > 0 ? (pCnt * onceSp) - remainSp : 0).toLocaleString() + " SP";
         document.getElementById('resCount').innerText = pCnt.toLocaleString();
-        document.getElementById('resPlannerOnceTime').innerText = formatTime(onceMins);
-        document.getElementById('resTotalNeededTime').innerText = formatTime(onceMins * pCnt);
+        document.getElementById('resPlannerOnceTime').innerText = formatTime(onceSeconds);
+        document.getElementById('resTotalNeededTime').innerText = formatTime(onceSeconds * pCnt);
 
         saveToLocal();
     }
@@ -446,11 +463,11 @@
         const fields = ['curLevel', 'targetLevel', 'epmJo', 'epmEok', 'epmMan', 'spBuffPercent', 'curRebirthCount', 'haveSp', 'curJob', 'tarJob', 'curT', 'tarT', 'curP', 'tarP', 'limitHour', 'limitMin'];
         const data = {};
         fields.forEach(f => { data[f] = document.getElementById(f).value; });
-        localStorage.setItem('level_up_planner_v4_final', JSON.stringify(data));
+        localStorage.setItem('level_up_planner_v4_final_fix', JSON.stringify(data));
     }
 
     function loadFromLocal() {
-        const saved = localStorage.getItem('level_up_planner_v4_final');
+        const saved = localStorage.getItem('level_up_planner_v4_final_fix');
         if (saved) {
             const data = JSON.parse(saved);
             Object.keys(data).forEach(k => { if (document.getElementById(k)) document.getElementById(k).value = data[k]; });
@@ -464,7 +481,7 @@
         for(let i=0; i<=15; i++) sets.p.forEach(id => document.getElementById(id).add(new Option(`초월력 ${i}단계`, i)));
     }
 
-    function resetInputs() { if(confirm("초기화하시겠습니까?")) { localStorage.removeItem('level_up_planner_v4_final'); location.reload(); } }
+    function resetInputs() { if(confirm("초기화하시겠습니까?")) { localStorage.removeItem('level_up_planner_v4_final_fix'); location.reload(); } }
 
     window.onload = () => {
         initSelects(); loadFromLocal();
