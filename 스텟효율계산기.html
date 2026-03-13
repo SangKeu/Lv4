@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스탯 효율 계산기 v10.9 - 공식 업데이트</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .wide-input-box { @apply bg-white p-4 rounded-3xl border-2 border-violet-100 shadow-sm transition-all; }
+        .wide-input { @apply w-full bg-transparent text-lg font-black text-violet-600 outline-none; }
+        .summary-box { @apply mt-2 text-[10px] font-black text-violet-400 text-right italic; }
+        
+        .point-input-focus:focus-within {
+            border-color: #f43f5e;
+            box-shadow: 0 0 20px rgba(244, 63, 94, 0.15);
+        }
+
+        .stat-grid-input {
+            @apply bg-white p-3 rounded-2xl border-2 border-sky-50 shadow-sm focus-within:border-sky-300 transition-all;
+        }
+        .stat-grid-label {
+            @apply text-[9px] font-black text-sky-400 uppercase mb-1 block;
+        }
+        .stat-grid-val {
+            @apply w-full bg-transparent text-sm font-black text-sky-700 outline-none;
+        }
+
+        .option-grid-input {
+            @apply bg-white p-3 rounded-2xl border-2 border-emerald-50 shadow-sm focus-within:border-emerald-300 transition-all;
+        }
+        .option-grid-label {
+            @apply text-[9px] font-black text-emerald-500 uppercase mb-1 block;
+        }
+        .option-grid-val {
+            @apply w-full bg-transparent text-sm font-black text-emerald-700 outline-none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-results { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="min-h-screen bg-[#f8fafc] text-slate-700 p-4 pb-24 text-[13px]">
+    <div id="app" class="max-w-xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 rounded-3xl shadow-lg flex items-center gap-4 border-b-4 border-emerald-500/30">
+            <div class="bg-emerald-500 p-2.5 rounded-2xl shadow-[0_0_15px_rgba(16,185,129,0.4)] text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="20" y2="20"/><line x1="14.5" y1="6.5" x2="18" y2="10"/><line x1="6.5" y1="14.5" x2="10" y2="18"/></svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-black italic uppercase text-white drop-shadow-md tracking-tight">스탯 효율 계산기</h1>
+                <p class="text-[10px] text-emerald-400 uppercase tracking-widest font-black">Optimization Algorithm v10.9 (Formula Updated)</p>
+            </div>
+        </div>
+
+        <!-- 개발 중 안내 문구 추가 -->
+        <div class="bg-amber-50 border-2 border-amber-200 p-4 rounded-3xl flex items-center gap-3 shadow-sm">
+            <div class="text-amber-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            </div>
+            <p class="text-amber-700 font-black text-sm tracking-tight italic">아직 개발 중입니다.</p>
+        </div>
+
+        <!-- 보유 포인트 섹션 -->
+        <div class="grid grid-cols-1">
+            <div class="bg-white p-7 rounded-[2.5rem] border-4 border-rose-100 shadow-xl transition-all point-input-focus">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="text-[11px] font-black text-rose-500 uppercase tracking-tighter flex items-center gap-2">
+                        <span class="w-2 h-2 bg-rose-500 rounded-full animate-ping"></span>
+                        보유 포인트
+                    </label>
+                    <span class="text-[9px] font-bold text-rose-300 italic">남은 포인트를 모두 입력하세요</span>
+                </div>
+                <div class="relative flex items-center bg-rose-50/50 p-5 rounded-[2rem] border-2 border-dashed border-rose-200">
+                    <input type="number" id="availablePoints" 
+                           placeholder="여기에 숫자를 입력하세요" 
+                           class="w-full bg-transparent text-3xl font-black text-rose-600 outline-none placeholder:text-rose-200 placeholder:text-sm placeholder:not-italic focus:ring-0">
+                    <div class="bg-rose-500 p-2 rounded-full shadow-lg text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 캐릭터 전투력 데이터 섹션 -->
+        <div class="bg-sky-50 p-6 rounded-[2.5rem] border-2 border-sky-100 shadow-md space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-black text-sky-600 italic flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    캐릭터 전투력 데이터
+                </h3>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="stat-grid-input">
+                    <label class="stat-grid-label">캐릭터 힘 (STR)</label>
+                    <input type="number" id="str" placeholder="0" class="stat-grid-val">
+                </div>
+                <div class="stat-grid-input">
+                    <label class="stat-grid-label text-rose-500">캐릭터 힘%</label>
+                    <input type="number" id="strRate" placeholder="0" class="stat-grid-val">
+                </div>
+                
+                <div class="stat-grid-input col-span-1 border-sky-200">
+                    <label class="stat-grid-label text-sky-600">일반 장비 공격력</label>
+                    <input type="number" id="normalEquipAtk" placeholder="0" class="stat-grid-val">
+                </div>
+                <div class="stat-grid-input col-span-1 border-sky-200">
+                    <label class="stat-grid-label text-sky-600">초월 장비 공격력</label>
+                    <input type="number" id="transEquipAtk" placeholder="0" class="stat-grid-val">
+                </div>
+                <div class="stat-grid-input col-span-2 border-sky-200 bg-white">
+                    <label class="stat-grid-label text-sky-600">장비 공격력 %</label>
+                    <input type="number" id="equipAtkRate" placeholder="0" class="stat-grid-val text-lg">
+                </div>
+
+                <div class="stat-grid-input col-span-2 border-sky-200 bg-sky-100/30">
+                    <label class="stat-grid-label text-sky-600">캐릭터 전투력 %</label>
+                    <input type="number" id="charAtkRate" placeholder="0" class="stat-grid-val text-sky-800 text-lg">
+                </div>
+            </div>
+
+            <div class="bg-white/80 p-5 rounded-3xl border-2 border-sky-200 mt-2 shadow-inner">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-sky-500 p-1.5 rounded-lg text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3L7 21M3 3h18M3 21h18"/></svg>
+                        </div>
+                        <span class="text-[11px] font-black text-sky-700 uppercase italic">전투력 실시간 산출</span>
+                    </div>
+                </div>
+                <div class="mb-4 text-center py-2">
+                    <div id="calculatedAtkDisplay" class="text-3xl font-black text-sky-600 tracking-tighter drop-shadow-sm leading-tight">0</div>
+                    <div class="text-[9px] font-bold text-sky-300 uppercase tracking-widest mt-1">최종 합산 전투력</div>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 font-mono text-[10px] leading-relaxed text-slate-500">
+                    <div class="flex justify-between border-b border-slate-200 pb-1 mb-1">
+                        <span class="text-[8px] opacity-60">((캐릭터 힘 x 힘%) x 2)</span>
+                        <span id="calc_part1" class="font-bold text-sky-600">0</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-200 pb-1 mb-1">
+                        <span class="text-[8px] opacity-60">x (1 + 합산장비공/100)</span>
+                        <span id="calc_part2" class="font-bold text-sky-600">x 1.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-[8px] opacity-60">x (1 + 캐전%/100)</span>
+                        <span id="calc_part3" class="font-bold text-sky-600">x 1.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 부가 옵션 데이터 섹션 -->
+        <div class="bg-emerald-50 p-6 rounded-[2.5rem] border-2 border-emerald-100 shadow-md space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-black text-emerald-600 italic flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><path d="m5 5 14 14"/><path d="m19 5-14 14"/></svg>
+                    부가 옵션 데이터
+                </h3>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <!-- 전직 스킬 데미지 % 선택 드롭박스 -->
+                <div class="col-span-2 bg-white p-4 rounded-2xl border-2 border-emerald-200 shadow-sm">
+                    <label class="text-[10px] font-black text-emerald-500 uppercase mb-1 block italic">전직 스킬 데미지 단계 (자동 합산)</label>
+                    <div class="flex items-center gap-3">
+                        <select id="skillDmgSelection" class="flex-grow bg-emerald-50 p-2 rounded-xl text-sm font-black text-emerald-700 outline-none border border-emerald-100 cursor-pointer">
+                            <option value="0">선택 안함</option>
+                            <option value="60">1차 스킬데미지 (60%)</option>
+                            <option value="180">2차 스킬데미지 (180%)</option>
+                            <option value="360">3차 스킬데미지 (360%)</option>
+                            <option value="720">4차 스킬데미지 (720%)</option>
+                            <option value="1350">5차 스킬데미지 (1350%)</option>
+                            <option value="2400">6차 스킬데미지 (2400%)</option>
+                            <option value="3600">7차 스킬데미지 (3600%)</option>
+                        </select>
+                        <div class="w-20 bg-emerald-100 p-2 rounded-xl text-center border border-emerald-200">
+                             <span id="jobSkillDisplay" class="text-xs font-black text-emerald-600">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option-grid-input">
+                    <label class="option-grid-label">캐릭터 민첩 (DEX)</label>
+                    <input type="number" id="dex" placeholder="0" class="option-grid-val">
+                </div>
+                <div class="option-grid-input">
+                    <label class="option-grid-label text-emerald-600">캐릭터 민첩%</label>
+                    <input type="number" id="dexRate" placeholder="0" class="stat-grid-val">
+                </div>
+                <div class="option-grid-input">
+                    <label class="option-grid-label">캐릭터 지력 (INT)</label>
+                    <input type="number" id="int" placeholder="0" class="option-grid-val">
+                </div>
+                <div class="option-grid-input">
+                    <label class="option-grid-label text-emerald-600">캐릭터 지력%</label>
+                    <input type="number" id="intRate" placeholder="0" class="stat-grid-val">
+                </div>
+
+                <!-- 캐릭터 스킬 데미지 % -->
+                <div class="option-grid-input col-span-1 border-emerald-200 bg-emerald-100/30">
+                    <label class="option-grid-label text-emerald-700">캐릭터 스킬 데미지 %</label>
+                    <input type="number" id="skillDmgRate" placeholder="0" class="option-grid-val text-emerald-800">
+                </div>
+                <div class="option-grid-input col-span-1 border-emerald-200 bg-emerald-100/30 text-rose-600 border-rose-100">
+                    <label class="option-grid-label text-rose-500">보스 추가 데미지 %</label>
+                    <input type="number" id="bossDmgRate" placeholder="0" class="option-grid-val text-rose-600">
+                </div>
+                <div class="option-grid-input col-span-2 border-emerald-200 bg-emerald-100/30">
+                    <label class="option-grid-label text-emerald-700">크리티컬 데미지 %</label>
+                    <input type="number" id="critDmgRate" placeholder="0" class="option-grid-val text-emerald-800 text-lg">
+                </div>
+            </div>
+
+            <!-- 파괴력 % (최종 계수) -->
+            <div class="bg-emerald-100 p-4 rounded-2xl border-2 border-emerald-300 shadow-inner">
+                <label class="text-[10px] font-black text-emerald-700 uppercase mb-1 block italic">파괴력 증가 %</label>
+                <input type="number" id="destructionRate" placeholder="0" class="w-full bg-transparent text-lg font-black text-emerald-900 outline-none">
+            </div>
+        </div>
+
+        <!-- 환생 전투력 데이터 섹션 -->
+        <div class="bg-violet-50 p-6 rounded-[2.5rem] border-2 border-violet-100 shadow-md space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-black text-violet-600 italic flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L4 2l3.5 12.5L13 18l5-5z"/></svg>
+                    환생 전투력 데이터
+                </h3>
+                <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-violet-200 shadow-sm">
+                    <label class="text-[9px] font-black text-violet-500 uppercase">환생 전투력 %</label>
+                    <input type="number" id="rebirthAtkRate" placeholder="0" class="w-12 text-center text-xs font-black text-violet-600 outline-none bg-transparent">
+                    <span class="text-[9px] font-black text-violet-300">%</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="wide-input-box">
+                    <label class="text-[10px] font-black text-violet-500 uppercase mb-1.5 block">총 환생 전투력 (10% 적용)</label>
+                    <input type="number" id="totalRebirthAtkInput" placeholder="0" class="wide-input">
+                    <div id="tr_summary" class="summary-box">합계: 0</div>
+                </div>
+                <div class="wide-input-box">
+                    <label class="text-[10px] font-black text-violet-500 uppercase mb-1.5 block">최고 전투력</label>
+                    <input type="number" id="maxRebirthAtkInput" placeholder="0" class="wide-input">
+                    <div id="ma_summary" class="summary-box">합계: 0</div>
+                </div>
+                <div class="wide-input-box">
+                    <label class="text-[10px] font-black text-violet-500 uppercase mb-1.5 block">적립된 전투력</label>
+                    <input type="number" id="accRebirthAtkInput" placeholder="0" class="wide-input">
+                    <div id="ac_summary" class="summary-box">합계: 0</div>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-violet-600 rounded-3xl border-b-4 border-violet-800 shadow-inner overflow-hidden">
+                <div class="p-5">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[8px] font-black text-violet-200 uppercase tracking-widest">Character Rebirth Atk</span>
+                        <span class="text-[9px] font-bold text-violet-300 italic">자동 단위 변환</span>
+                    </div>
+                    <div class="text-[9px] font-black text-violet-300 uppercase mb-1">캐릭터창 환생 전투력</div>
+                    <div id="finalRebirthAtkResult" class="text-xl font-black text-white tracking-tight">0</div>
+                </div>
+                <div class="bg-violet-900/40 p-4 border-t border-violet-400/20 font-mono text-[9px] leading-relaxed text-violet-200">
+                    <div class="flex justify-between border-b border-violet-400/10 pb-1 mb-1">
+                        <span class="opacity-60">기초값 (총환생10% + 최고 + 적립)</span>
+                        <span id="rb_calc_base" class="font-bold text-emerald-300">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-60">최종값 (기초값 x (1 + 환전%))</span>
+                        <span id="rb_calc_final" class="font-bold text-emerald-300">x 1.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 몬스터 체력 섹션 -->
+        <div class="bg-slate-900 p-6 rounded-[2.2rem] border-b-4 border-emerald-500 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <label class="text-[10px] font-black text-emerald-400 uppercase flex items-center gap-2 tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> 몬스터 정보 설정
+                </label>
+                <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <select id="monsterType" class="bg-transparent text-[10px] font-black text-emerald-400 outline-none cursor-pointer">
+                        <option value="normal" class="bg-slate-800">일반 몬스터 (방어10%)</option>
+                        <option value="boss" class="bg-slate-800">보스 몬스터 (방어20%)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+                <div class="flex flex-col"><input type="number" id="hp_gyeong" placeholder="0" class="w-full bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-center text-sm font-black text-emerald-400 outline-none"><span class="text-[9px] text-center mt-1 text-slate-500 font-black">경</span></div>
+                <div class="flex flex-col"><input type="number" id="hp_jo" placeholder="0" class="w-full bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-center text-sm font-black text-emerald-400 outline-none"><span class="text-[9px] text-center mt-1 text-slate-500 font-black">조</span></div>
+                <div class="flex flex-col"><input type="number" id="hp_eok" placeholder="0" class="w-full bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-center text-sm font-black text-emerald-400 outline-none"><span class="text-[9px] text-center mt-1 text-slate-500 font-black">억</span></div>
+                <div class="flex flex-col"><input type="number" id="hp_man" placeholder="0" class="w-full bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-center text-sm font-black text-emerald-400 outline-none"><span class="text-[9px] text-center mt-1 text-slate-500 font-black">만</span></div>
+            </div>
+        </div>
+
+        <!-- 실시간 데미지/파괴력 대시보드 -->
+        <div class="bg-gradient-to-br from-indigo-900 via-slate-900 to-slate-900 p-7 rounded-[2.5rem] border-t-4 border-indigo-400 shadow-2xl space-y-5">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-black text-indigo-300 italic flex items-center gap-3 tracking-tight">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m5 15 7 7 7-7"/><path d="m5 9 7 7 7-7"/><path d="m5 3 7 7 7-7"/></svg>
+                    실시간 데미지 시뮬레이션
+                </h3>
+                <div id="monsterBadge" class="px-3 py-1 bg-emerald-500/20 rounded-full border border-emerald-500/30">
+                    <span class="text-[9px] font-black text-emerald-400 uppercase">일반 몬스터 대상</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-slate-800/50 p-5 rounded-3xl border border-slate-700 shadow-inner group">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">파괴력</span>
+                        <span class="text-[8px] font-bold text-slate-500 italic">(전투력 합계 × (1 + 파괴력증가%))</span>
+                    </div>
+                    <div id="destructionPowerDisplay" class="text-2xl font-black text-indigo-300 tracking-tighter drop-shadow-md">0</div>
+                    <div class="h-1 w-full bg-slate-700 rounded-full mt-3 overflow-hidden">
+                        <div id="destBar" class="h-full bg-indigo-50" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="bg-indigo-600 p-6 rounded-[2rem] border-b-8 border-indigo-800 shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-black text-indigo-200 uppercase tracking-tighter italic">예상 최종 데미지</span>
+                            <span id="formulaLabel" class="text-[8px] font-bold text-indigo-300">((파괴력 x 스킬%) - 방어) x 크뎀</span>
+                        </div>
+                        <div id="finalDamageDisplay" class="text-4xl font-black text-white tracking-tighter drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)] leading-none">0</div>
+                        <div class="mt-4 flex gap-2">
+                            <div class="flex-1 bg-indigo-900/40 p-2 rounded-xl border border-indigo-400/20 text-center">
+                                <div class="text-[7px] font-black text-indigo-300 uppercase">몬스터 방어력</div>
+                                <div id="monsterDefVal" class="text-[11px] font-bold text-white">0</div>
+                            </div>
+                            <div class="flex-1 bg-indigo-900/40 p-2 rounded-xl border border-indigo-400/20 text-center">
+                                <div class="text-[7px] font-black text-indigo-300 uppercase">스킬 합산 %</div>
+                                <div id="skillMultiVal" class="text-[11px] font-bold text-white">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 추천 스탯 최적화 결과 섹션 -->
+        <div id="optimizationResult" class="hidden animate-results">
+            <div class="bg-white p-8 rounded-[3rem] border-2 border-indigo-100 shadow-2xl space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-base font-black text-slate-800 uppercase flex items-center gap-2">
+                        <span class="bg-indigo-500 w-1.5 h-5 rounded-full inline-block"></span>
+                        알고리즘 분석 결과
+                    </h2>
+                </div>
+                <div id="distCharts" class="grid grid-cols-1 gap-4"></div>
+                <div class="p-5 bg-slate-900 rounded-[2rem] border-b-4 border-indigo-500">
+                    <div id="efficiencyComment" class="text-white text-[13px] font-bold leading-relaxed"></div>
+                </div>
+            </div>
+            <div class="mt-6 space-y-4">
+                <div id="priorityCards" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const statsConfig = [
+            { id: 'str' }, { id: 'strRate' }, 
+            { id: 'normalEquipAtk' }, { id: 'transEquipAtk' }, { id: 'equipAtkRate' },
+            { id: 'charAtkRate' },
+            { id: 'int' }, { id: 'intRate' },
+            { id: 'dex' }, { id: 'dexRate' },
+            { id: 'skillDmgRate' }, { id: 'critDmgRate' },
+            { id: 'destructionRate' }, { id: 'bossDmgRate' }
+        ];
+
+        const hiddenStats = { extraAtkRate: 0 };
+        const allInputIds = [
+            'availablePoints', 'totalRebirthAtkInput', 'maxRebirthAtkInput', 'accRebirthAtkInput',
+            'rebirthAtkRate', 'monsterType', 'hp_gyeong', 'hp_jo', 'hp_eok', 'hp_man',
+            ...statsConfig.map(s => s.id)
+        ];
+
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            return el ? (parseFloat(el.value) || 0) : (hiddenStats[id] || 0);
+        };
+
+        const formatKoreanUnit = (num) => {
+            if (num <= 0 || isNaN(num)) return "0";
+            if (num < 10000) return Math.floor(num).toLocaleString();
+            let result = '';
+            const gyeong = Math.floor(num / 1e16);
+            const jo = Math.floor((num % 1e16) / 1e12);
+            const eok = Math.floor((num % 1e12) / 1e8);
+            const man = Math.floor((num % 1e8) / 1e4);
+            if (gyeong > 0) result += gyeong + '경 ';
+            if (jo > 0) result += jo + '조 ';
+            if (eok > 0) result += eok + '억 ';
+            if (man > 0) result += man + '만 ';
+            return result.trim();
+        };
+
+        const calculateTotalDamage = (s, cAtk, mHp, mType) => {
+            const totalBasePower = (cAtk + s.totalRebirthAtk) * (1 + (s.extraAtkRate || 0) / 100);
+            const destructionPower = totalBasePower * (1 + (s.destructionRate / 100));
+            const jobSkillRate = parseFloat(document.getElementById('skillDmgSelection').value) || 0;
+            const totalSkillPercent = (jobSkillRate + s.skillDmgRate);
+            const skillMulti = totalSkillPercent / 100;
+
+            let monsterDefRate = mType === 'boss' ? 0.2 : 0.1;
+            let monsterDef = mHp * monsterDefRate;
+            
+            let finalDmg = 0;
+            if (mType === 'boss') {
+                const bossBonusMult = (1 + (s.bossDmgRate / 100));
+                const skillAppliedDmg = (destructionPower * skillMulti) * bossBonusMult;
+                const effectiveDmg = Math.max(0, skillAppliedDmg - monsterDef);
+                finalDmg = effectiveDmg * (s.critDmgRate / 100);
+            } else {
+                const skillAppliedDmg = (destructionPower * skillMulti);
+                const effectiveDmg = Math.max(0, skillAppliedDmg - monsterDef);
+                finalDmg = effectiveDmg * (s.critDmgRate / 100);
+            }
+            
+            return { 
+                destruction: destructionPower, 
+                monsterDef: monsterDef, 
+                final: finalDmg,
+                skillPercent: totalSkillPercent
+            };
+        };
+
+        const updateOptimization = () => {
+            const currentStats = {};
+            statsConfig.forEach(s => currentStats[s.id] = getVal(s.id));
+            
+            const combinedEquipAtk = (currentStats.normalEquipAtk + currentStats.transEquipAtk) * (1 + currentStats.equipAtkRate / 100);
+            const effectiveStr = currentStats.str * (1 + currentStats.strRate / 100);
+            const part1 = (effectiveStr * 2);
+            const part2 = (1 + combinedEquipAtk / 100);
+            const part3 = (1 + currentStats.charAtkRate / 100);
+            const calculatedCharAtk = part1 * part2 * part3;
+
+            document.getElementById('calc_part1').innerText = formatKoreanUnit(part1);
+            document.getElementById('calc_part2').innerText = `x ${part2.toFixed(2)}`;
+            document.getElementById('calc_part3').innerText = `x ${part3.toFixed(2)}`;
+            document.getElementById('calculatedAtkDisplay').innerText = formatKoreanUnit(calculatedCharAtk);
+
+            const baseValue = (getVal('totalRebirthAtkInput') * 0.1) + getVal('maxRebirthAtkInput') + getVal('accRebirthAtkInput');
+            const rebirthMult = (1 + getVal('rebirthAtkRate') / 100);
+            const calculatedRebirth = baseValue * rebirthMult;
+            
+            document.getElementById('tr_summary').innerText = `합계: ${formatKoreanUnit(getVal('totalRebirthAtkInput'))}`;
+            document.getElementById('ma_summary').innerText = `합계: ${formatKoreanUnit(getVal('maxRebirthAtkInput'))}`;
+            document.getElementById('ac_summary').innerText = `합계: ${formatKoreanUnit(getVal('accRebirthAtkInput'))}`;
+            document.getElementById('rb_calc_base').innerText = formatKoreanUnit(baseValue);
+            document.getElementById('rb_calc_final').innerText = `x ${rebirthMult.toFixed(2)}`;
+            document.getElementById('finalRebirthAtkResult').innerText = formatKoreanUnit(calculatedRebirth);
+            
+            currentStats.totalRebirthAtk = calculatedRebirth;
+
+            const mHp = (getVal('hp_gyeong') * 1e16) + (getVal('hp_jo') * 1e12) + (getVal('hp_eok') * 1e8) + (getVal('hp_man') * 1e4);
+            const mType = document.getElementById('monsterType').value;
+
+            const badge = document.getElementById('monsterBadge');
+            const formula = document.getElementById('formulaLabel');
+            if (mType === 'boss') {
+                badge.innerHTML = '<span class="text-[9px] font-black text-rose-400 uppercase">보스 몬스터 대상</span>';
+                badge.className = "px-3 py-1 bg-rose-500/20 rounded-full border border-rose-500/30";
+                formula.innerText = "((파괴력 x 스킬% x 보스뎀배율) - 방어) x 크뎀";
+            } else {
+                badge.innerHTML = '<span class="text-[9px] font-black text-emerald-400 uppercase">일반 몬스터 대상</span>';
+                badge.className = "px-3 py-1 bg-emerald-500/20 rounded-full border border-emerald-500/30";
+                formula.innerText = "((파괴력 x 스킬%) - 방어) x 크뎀";
+            }
+
+            const dmgResult = calculateTotalDamage(currentStats, calculatedCharAtk, mHp, mType);
+            document.getElementById('destructionPowerDisplay').innerText = formatKoreanUnit(dmgResult.destruction);
+            document.getElementById('finalDamageDisplay').innerText = formatKoreanUnit(dmgResult.final);
+            document.getElementById('monsterDefVal').innerText = formatKoreanUnit(dmgResult.monsterDef);
+            document.getElementById('skillMultiVal').innerText = dmgResult.skillPercent + "%";
+            
+            const barWidth = Math.min(100, (dmgResult.destruction / (mHp || 1)) * 100);
+            document.getElementById('destBar').style.width = (mHp === 0 ? 100 : barWidth) + "%";
+            document.getElementById('jobSkillDisplay').innerText = (parseFloat(document.getElementById('skillDmgSelection').value) || 0) + "%";
+
+            const ap = getVal('availablePoints');
+            if (ap <= 0) {
+                document.getElementById('optimizationResult').classList.add('hidden');
+                return;
+            }
+            document.getElementById('optimizationResult').classList.remove('hidden');
+
+            const delta = Math.max(100, ap * 0.1);
+            const currentDmg = dmgResult.final || 1;
+
+            const strAtk = ((currentStats.str + delta) * (1 + currentStats.strRate / 100) * 2) * part2 * part3;
+            const strDmg = calculateTotalDamage(currentStats, strAtk, mHp, mType).final;
+
+            const intStats = {...currentStats, skillDmgRate: currentStats.skillDmgRate + (delta * 0.01 * (1 + currentStats.intRate / 100))};
+            const intDmg = calculateTotalDamage(intStats, calculatedCharAtk, mHp, mType).final;
+
+            const dexStats = {...currentStats, critDmgRate: currentStats.critDmgRate + (delta * 0.01 * (1 + currentStats.dexRate / 100))};
+            const dexDmg = calculateTotalDamage(dexStats, calculatedCharAtk, mHp, mType).final;
+            
+            const efficiencies = [
+                { id: 'str', name: '힘 (전투력)', desc: '캐릭터 전투력 증가', gain: (strDmg - currentDmg) / delta, color: 'bg-rose-400', textColor: 'text-rose-500' },
+                { id: 'int', name: '지력 (스킬뎀)', desc: '캐릭터 스킬 데미지% 증가', gain: (intDmg - currentDmg) / delta, color: 'bg-sky-400', textColor: 'text-sky-500' },
+                { id: 'dex', name: '민첩 (크뎀)', desc: '크리티컬 데미지% 증가', gain: (dexDmg - currentDmg) / delta, color: 'bg-amber-400', textColor: 'text-amber-500' }
+            ].sort((a, b) => b.gain - a.gain);
+
+            renderOptimizationResults(efficiencies, ap);
+        };
+
+        const renderOptimizationResults = (effs, ap) => {
+            const distArea = document.getElementById('distCharts');
+            const priorityArea = document.getElementById('priorityCards');
+            const commentArea = document.getElementById('efficiencyComment');
+            distArea.innerHTML = ''; priorityArea.innerHTML = '';
+            
+            const totalGain = effs.reduce((acc, curr) => acc + Math.max(0, curr.gain), 0);
+            
+            effs.forEach((eff, idx) => {
+                const ratio = totalGain > 0 ? (Math.max(0, eff.gain) / totalGain) * 100 : (idx === 0 ? 100 : 0);
+                const investAmt = Math.floor(ap * (ratio / 100));
+                
+                distArea.innerHTML += `
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between items-end mb-2">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase">${eff.name}</p>
+                                <p class="text-xl font-black text-slate-800 tracking-tighter">+${investAmt.toLocaleString()}</p>
+                            </div>
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded-lg ${eff.color} text-white">${ratio.toFixed(0)}% 분배</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="h-full ${eff.color}" style="width: ${ratio}%"></div>
+                        </div>
+                    </div>`;
+
+                priorityArea.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl border ${idx === 0 ? 'border-indigo-400 shadow-md ring-2 ring-indigo-50' : 'border-slate-200 shadow-sm'} flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg ${idx === 0 ? 'bg-indigo-500 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}">${idx + 1}</div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                                <span class="font-black ${idx === 0 ? 'text-indigo-600' : 'text-slate-700'}">${eff.name}</span>
+                                <span class="text-[8px] font-black px-2 py-0.5 rounded-md bg-slate-50 text-slate-400">${eff.desc}</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-400 mt-1">추천 투자: <span class="${eff.textColor}">+${investAmt.toLocaleString()}</span></p>
+                        </div>
+                    </div>`;
+            });
+
+            const best = effs[0];
+            commentArea.innerHTML = `현재 <span class="text-indigo-400 font-black underline underline-offset-4">${best.name}</span> 투자가 가장 효율적입니다. <br/><span class="opacity-80 font-medium text-[11px]">일반/보스 몬스터별 특화 공식이 적용된 최적화 결과입니다.</span>`;
+        };
+
+        document.getElementById('skillDmgSelection').addEventListener('change', updateOptimization);
+        document.getElementById('monsterType').addEventListener('change', updateOptimization);
+
+        allInputIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', updateOptimization);
+        });
+        
+        updateOptimization();
+    </script>
+</body>
+</html>
+
