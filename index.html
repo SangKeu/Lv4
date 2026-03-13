@@ -52,7 +52,6 @@
 </head>
 <body class="pb-12">
 
-    <!-- Header -->
     <header class="glass-header sticky top-0 z-50 px-6 py-5">
         <div class="max-w-md mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -69,7 +68,6 @@
 
     <main class="max-w-md mx-auto px-6 pt-10 space-y-10">
         
-        <!-- Welcome Section -->
         <section class="animate-slide-up">
             <h2 class="text-3xl font-black text-slate-900 leading-[1.2]">
                 필요한 도구를<br><span class="text-indigo-600">선택해 주세요.</span>
@@ -77,10 +75,8 @@
             <p class="text-sm text-slate-500 mt-3 font-semibold">최신 데이터를 바탕으로 계산을 시작합니다.</p>
         </section>
 
-        <!-- Tool Grid (exp.js 제외됨) -->
         <section class="grid grid-cols-1 gap-5 animate-slide-up" style="animation-delay: 0.15s;">
             
-            <!-- 통합플래너 -->
             <a href="통합플래너.html" class="portal-card group bg-white p-6 rounded-[2.5rem] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:border-indigo-100 flex items-center gap-5">
                 <div class="icon-box bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
@@ -94,7 +90,6 @@
                 </div>
             </a>
 
-            <!-- 타수계산기 -->
             <a href="타수계산기.html" class="portal-card group bg-white p-6 rounded-[2.5rem] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:border-emerald-100 flex items-center gap-5">
                 <div class="icon-box bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -108,7 +103,6 @@
                 </div>
             </a>
 
-            <!-- 혼돈의주문서계산기 -->
             <a href="혼돈의주문서계산기.html" class="portal-card group bg-white p-6 rounded-[2.5rem] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:border-orange-100 flex items-center gap-5">
                 <div class="icon-box bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -122,9 +116,21 @@
                 </div>
             </a>
 
+            <a href="스탯효율계산기.html" class="portal-card group bg-white p-6 rounded-[2.5rem] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:border-blue-100 flex items-center gap-5">
+                <div class="icon-box bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">스탯 효율 계산기</h3>
+                    <p class="text-[10px] text-slate-400 font-bold mt-1 uppercase">Stat Efficiency Calc</p>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                    <svg class="w-4 h-4 text-slate-300 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+            </a>
+
         </section>
 
-        <!-- Footer Info -->
         <footer class="text-center pt-10 animate-slide-up" style="animation-delay: 0.3s;">
             <div class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full">
                 <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
@@ -149,4 +155,3 @@
     </script>
 </body>
 </html>
-
