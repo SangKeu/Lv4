@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스타포스 수치표 - 깔끔한 버전</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Pretendard', sans-serif;
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+
+        /* 표 하단에 은은한 그림자 및 테두리 */
+        .table-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* 행에 마우스를 올렸을 때 강조 */
+        .data-row:hover {
+            background-color: #f9fafb;
+        }
+
+        /* 짝수 행 배경색 (가독성 향상) */
+        .data-row:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        /* 단계별 포인트 컬러 (매우 절제됨) */
+        .star-tag {
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .value-text {
+            color: #2563eb; /* 수치만 파란색으로 강조 */
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- 간단한 헤더 -->
+        <div class="mb-10">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">스타포스 강화 수치 일람</h1>
+            <div class="h-1 w-12 bg-gray-900 mb-4"></div>
+            <p class="text-sm text-gray-500 font-medium uppercase tracking-tight">Level 4 Integrated Management Data</p>
+        </div>
+
+        <!-- 데이터 테이블 -->
+        <div class="table-container shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase">강화 단계</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">수치 (Val)</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-center">진행 구간</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase text-right">소모 주문량</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <!-- JavaScript에서 데이터 삽입 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 푸터 정보 -->
+        <div class="mt-6 flex justify-between items-center text-xs text-gray-400 border-t border-gray-100 pt-4">
+            <span>&copy; STARFORCE SYSTEM DATA</span>
+            <span>최종 업데이트: 2024.05</span>
+        </div>
+    </div>
+
+    <script>
+        const starforceData = [
+            { star: 1, val: 0.03, range: "0→1", cost: 1000 },
+            { star: 2, val: 0.13, range: "1→2", cost: 2000 },
+            { star: 3, val: 0.29, range: "2→3", cost: 4000 },
+            { star: 4, val: 0.51, range: "3→4", cost: 8000 },
+            { star: 5, val: 0.8, range: "4→5", cost: 16000 },
+            { star: 6, val: 1.15, range: "5→6", cost: 32000 },
+            { star: 7, val: 1.57, range: "6→7", cost: 64000 },
+            { star: 8, val: 2.05, range: "7→8", cost: 100000 },
+            { star: 9, val: 2.59, range: "8→9", cost: 150000 },
+            { star: 10, val: 3.2, range: "9→10", cost: 200000 },
+            { star: 11, val: 3.87, range: "10→11", cost: 250000 },
+            { star: 12, val: 4.61, range: "11→12", cost: 300000 },
+            { star: 13, val: 5.41, range: "12→13", cost: 350000 },
+            { star: 14, val: 6.27, range: "13→14", cost: 400000 },
+            { star: 15, val: 7.2, range: "14→15", cost: 450000 },
+            { star: 16, val: 8.19, range: "15→16", cost: 500000 },
+            { star: 17, val: 9.25, range: "16→17", cost: 0 },
+            { star: 18, val: 10.37, range: "17→18", cost: 0 },
+            { star: 19, val: 11.53, range: "18→19", cost: 0 }
+        ];
+
+        function init() {
+            const tbody = document.getElementById('dataTable');
+            starforceData.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'data-row transition-colors border-b border-gray-100 last:border-0';
+                
+                const costText = item.cost > 0 
+                    ? item.cost.toLocaleString() 
+                    : '<span class="text-gray-300">-</span>';
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 star-tag text-sm">${item.star}성 (★)</td>
+                    <td class="px-6 py-4 text-center value-text text-base">${item.val}</td>
+                    <td class="px-6 py-4 text-center text-xs text-gray-400 font-mono">${item.range}</td>
+                    <td class="px-6 py-4 text-right text-sm font-semibold text-gray-700 font-mono">${costText}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
+
