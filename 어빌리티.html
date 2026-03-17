@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>어빌리티 통합 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+        /* 등급별 이미지 기반 색상 정의 */
+        .bg-common { background-color: #f8f9fa; color: #6b7280; }
+        .bg-advanced { background-color: #e0faff; color: #0891b2; }
+        .bg-rare { background-color: #93c5fd; color: #1e40af; }
+        .bg-epic { background-color: #e9d5ff; color: #6b21a8; }
+        .bg-unique { background-color: #fef08a; color: #854d0e; }
+        .bg-legendary { background-color: #bbf7d0; color: #166534; }
+        .bg-artifact { background-color: #ffcc99; color: #9a3412; }
+        .bg-myth { background-color: #fca5a5; color: #991b1b; }
+        .bg-transcend { background-color: #e8a2ff; color: #701a75; }
+        .bg-immortal { background-color: #ef4444; color: #ffffff; }
+        .bg-dominate { background-color: #4f46e5; color: #ffffff; }
+        .bg-absolute { background-color: #eab308; color: #ffffff; }
+        .bg-creation { background-color: #38bdf8; color: #ffffff; }
+
+        .grade-card {
+            transition: all 0.2s ease-in-out;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        .grade-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+        }
+        .grade-content.open {
+            max-height: 1000px;
+            border: 1px solid #f1f5f9;
+            border-top: 0;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+        .checkbox-custom {
+            width: 18px;
+            height: 18px;
+            accent-color: #eab308; /* 메소 색상 */
+            cursor: pointer;
+        }
+        .btn-group-white {
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+        }
+        .btn-group-white.active {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-color: rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+        .guide-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            text-align: center;
+        }
+        .guide-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            padding: 10px 4px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .guide-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .scroll-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .highlight-stat {
+            background-color: #fffbeb;
+            font-weight: 600;
+            color: #b45309;
+        }
+        .partial-check {
+            position: relative;
+        }
+        .partial-check::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -8px;
+            width: 4px;
+            height: 4px;
+            background-color: currentColor;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+        /* 메소 아이콘용 스타일 */
+        .meso-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #facc15;
+            color: #854d0e;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 12px;
+            border: 1.5px solid #854d0e;
+        }
+    </style>
+</head>
+<body class="p-4 flex flex-col items-center">
+    
+    <!-- 타이틀 섹션 -->
+    <div class="w-full max-w-md text-center py-8">
+        <h1 class="text-3xl font-black text-slate-800 flex justify-center items-center gap-2">
+            <span>✨</span> 어빌리티 <span>✨</span>
+        </h1>
+    </div>
+
+    <!-- 계산기 섹션 -->
+    <div class="w-full max-w-md bg-white rounded-[2rem] shadow-lg border border-gray-100 p-6 mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-2">
+                <span class="meso-icon">M</span>
+                <h2 class="text-xl font-bold text-gray-800">메소 계산기</h2>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleAll(true)" class="px-3 py-1 bg-gray-50 text-[11px] font-bold rounded-lg border border-gray-200 text-gray-500">전체 펼치기</button>
+                <button onclick="toggleAll(false)" class="px-3 py-1 bg-gray-50 text-[11px] font-bold rounded-lg border border-gray-200 text-gray-500">전체 접기</button>
+            </div>
+        </div>
+
+        <div id="grade-container" class="space-y-2">
+            <!-- JS로 생성됨 -->
+        </div>
+
+        <!-- 결과 창 -->
+        <div class="mt-8 p-6 bg-white rounded-2xl border-2 border-dotted border-yellow-200">
+            <h3 class="text-center font-bold text-slate-500 text-sm mb-2">현재 선택된 총 소모 메소</h3>
+            <div class="text-center">
+                <div id="total-gold-korean" class="text-xs font-bold text-yellow-600 mb-1">0 메소</div>
+                <div class="text-2xl font-black text-slate-800 flex items-center justify-center gap-2">
+                    <span id="total-gold">0</span>
+                    <span class="meso-icon text-[10px]">M</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 상세 수치 가이드 섹션 -->
+    <div class="w-full max-w-md bg-white rounded-[2rem] shadow-lg border border-gray-100 p-6 mb-10">
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">📈</span>
+                <h2 class="text-lg font-bold text-gray-800">상세 수치 가이드</h2>
+            </div>
+            <div class="flex gap-1">
+                <button onclick="toggleAllGuides(true)" class="px-2 py-1 bg-gray-50 text-[10px] font-bold rounded text-gray-400">모두 펼치기</button>
+                <button onclick="toggleAllGuides(false)" class="px-2 py-1 bg-gray-50 text-[10px] font-bold rounded text-gray-400">모두 접기</button>
+            </div>
+        </div>
+        <div id="guide-display-container" class="space-y-2">
+            <!-- JS로 가이드 테이블 생성됨 -->
+        </div>
+    </div>
+
+    <script>
+        function createSteps(start, increment, count = 10, specialLast = null) {
+            return Array.from({ length: count }, (_, i) => {
+                let gold = start + (increment * i);
+                if (specialLast !== null && i === count - 1) {
+                    gold = specialLast;
+                }
+                return {
+                    name: `${i + 1}단계`,
+                    gold: gold
+                };
+            });
+        }
+
+        function createCommonSteps() {
+            const steps = [{ name: '1단계', gold: 0 }];
+            for(let i = 1; i < 10; i++) {
+                steps.push({
+                    name: `${i + 1}단계`,
+                    gold: 500000 + (250000 * (i - 1))
+                });
+            }
+            return steps;
+        }
+
+        const grades = [
+            { id: 'common', name: '일반', bg: 'bg-common', steps: createCommonSteps() },
+            { id: 'advanced', name: '고급', bg: 'bg-advanced', steps: createSteps(25000000, 2500000) },
+            { id: 'rare', name: '레어', bg: 'bg-rare', steps: createSteps(500000000, 150000000) },
+            { id: 'epic', name: '에픽', bg: 'bg-epic', steps: createSteps(5000000000, 1000000000) },
+            { id: 'unique', name: '유니크', bg: 'bg-unique', steps: createSteps(50000000000, 10000000000) },
+            { id: 'legendary', name: '레전더리', bg: 'bg-legendary', steps: createSteps(500000000000, 125000000000) },
+            { id: 'artifact', name: '유물', bg: 'bg-artifact', steps: createSteps(1750000000000, 125000000000) },
+            { id: 'myth', name: '신화', bg: 'bg-myth', steps: createSteps(3000000000000, 125000000000) },
+            { id: 'transcend', name: '초월', bg: 'bg-transcend', steps: createSteps(4500000000000, 250000000000) },
+            { id: 'immortal', name: '불멸', bg: 'bg-immortal', steps: createSteps(7500000000000, 500000000000) },
+            { id: 'dominate', name: '지배', bg: 'bg-dominate', steps: createSteps(25000000000000, 2500000000000) },
+            { id: 'absolute', name: '절대', bg: 'bg-absolute', steps: createSteps(75000000000000, 7500000000000) },
+            { id: 'creation', name: '천상', bg: 'bg-creation', steps: createSteps(250000000000000, 15000000000000, 10, 0) }
+        ];
+
+        const abilityTable = {
+            'common': [{ s: 1, bs: "0.30~0.36", sk: "0.90~1.00", cl: "0.20~0.24", cr: "0.40~0.46", stat: "1.00~1.30", all: "0.50~0.60", cd: "0.80~0.90" }, { s: 10, bs: "0.60~0.72", sk: "1.80~2.00", cl: "0.40~0.48", cr: "0.80~0.92", stat: "2.00~2.60", all: "1.00~1.20", cd: "1.60~1.80" }],
+            'advanced': [{ s: 1, bs: "0.63~0.75", sk: "1.89~2.10", cl: "0.42~0.50", cr: "0.84~0.96", stat: "2.10~2.73", all: "1.05~1.26", cd: "1.68~1.89" }, { s: 10, bs: "0.90~1.08", sk: "2.70~3.00", cl: "0.60~0.72", cr: "1.20~1.38", stat: "3.00~3.90", all: "1.50~1.80", cd: "2.40~2.70" }],
+            'rare': [{ s: 1, bs: "0.93~1.11", sk: "2.79~3.10", cl: "0.62~0.74", cr: "1.24~1.42", stat: "3.10~4.03", all: "1.55~1.86", cd: "2.48~2.79" }, { s: 10, bs: "1.20~1.44", sk: "3.60~4.00", cl: "0.80~0.96", cr: "1.60~1.84", stat: "4.00~5.20", all: "2.00~2.40", cd: "3.20~3.60" }],
+            'epic': [{ s: 1, bs: "1.23~1.47", sk: "3.69~4.10", cl: "0.82~0.98", cr: "1.64~1.88", stat: "4.10~5.33", all: "2.05~2.46", cd: "3.28~3.69" }, { s: 10, bs: "1.50~1.80", sk: "4.50~5.00", cl: "1.00~1.20", cr: "2.00~2.30", stat: "5.00~6.50", all: "2.50~3.00", cd: "4.00~4.50" }],
+            'unique': [{ s: 1, bs: "1.53~1.83", sk: "4.59~5.10", cl: "1.02~1.22", cr: "2.04~2.34", stat: "5.10~6.63", all: "2.55~3.06", cd: "4.08~4.59" }, { s: 10, bs: "1.80~2.16", sk: "5.40~6.00", cl: "1.20~1.44", cr: "2.40~2.76", stat: "6.00~7.80", all: "3.00~3.60", cd: "4.80~5.40" }],
+            'legendary': [{ s: 1, bs: "1.83~2.19", sk: "5.49~6.10", cl: "1.22~1.46", cr: "2.44~2.80", stat: "6.10~7.93", all: "3.05~3.66", cd: "4.88~5.49" }, { s: 10, bs: "2.10~2.52", sk: "6.30~7.00", cl: "1.40~1.68", cr: "2.80~3.22", stat: "7.00~9.10", all: "3.50~4.20", cd: "5.60~6.30" }],
+            'artifact': [{ s: 1, bs: "2.13~2.55", sk: "6.39~7.10", cl: "1.42~1.70", cr: "2.84~3.26", stat: "7.10~9.23", all: "3.55~4.26", cd: "5.68~6.39" }, { s: 10, bs: "2.40~2.88", sk: "7.20~8.00", cl: "1.60~1.92", cr: "3.20~3.68", stat: "8.00~10.4", all: "4.00~4.80", cd: "6.40~7.20" }],
+            'myth': [{ s: 1, bs: "2.43~2.91", sk: "7.29~8.10", cl: "1.62~1.94", cr: "3.24~3.72", stat: "8.10~10.53", all: "4.05~4.86", cd: "6.48~7.29" }, { s: 10, bs: "2.70~3.24", sk: "8.10~9.00", cl: "1.80~2.16", cr: "3.60~4.14", stat: "9.00~11.7", all: "4.50~5.40", cd: "7.20~8.10" }],
+            'transcend': [{ s: 1, bs: "2.73~3.27", sk: "8.19~9.10", cl: "1.82~2.18", cr: "3.64~4.18", stat: "9.10~11.83", all: "4.55~5.46", cd: "7.28~8.19" }, { s: 10, bs: "3.00~3.60", sk: "9.00~10.0", cl: "2.00~2.40", cr: "4.00~4.60", stat: "10.0~13.0", all: "5.00~6.00", cd: "8.00~9.00" }],
+            'immortal': [{ s: 1, bs: "3.03~3.63", sk: "9.09~10.1", cl: "2.02~2.42", cr: "4.04~4.64", stat: "10.1~13.13", all: "5.05~6.06", cd: "8.08~9.09" }, { s: 10, bs: "3.30~3.96", sk: "9.90~11.0", cl: "2.20~2.64", cr: "4.40~5.06", stat: "11.0~14.3", all: "5.50~6.60", cd: "8.80~9.90" }],
+            'dominate': [{ s: 1, bs: "3.33~3.99", sk: "9.99~11.1", cl: "2.22~2.66", cr: "4.44~5.10", stat: "11.1~14.43", all: "5.55~6.66", cd: "8.88~9.99" }, { s: 10, bs: "3.60~4.32", sk: "10.8~12.0", cl: "2.40~2.88", cr: "4.80~5.52", stat: "12.0~15.6", all: "6.00~7.20", cd: "9.60~10.8" }],
+            'absolute': [{ s: 1, bs: "3.63~4.35", sk: "10.89~12.1", cl: "2.42~2.90", cr: "4.84~5.56", stat: "12.1~15.73", all: "6.05~7.26", cd: "9.68~10.89" }, { s: 10, bs: "3.90~4.68", sk: "11.7~13.0", cl: "2.60~3.12", cr: "5.20~5.98", stat: "13.0~16.9", all: "6.50~7.80", cd: "10.4~11.7" }],
+            'creation': [{ s: 1, bs: "3.93~4.71", sk: "11.79~13.1", cl: "2.62~3.14", cr: "5.24~6.02", stat: "13.1~17.03", all: "6.55~7.86", cd: "10.48~11.79" }, { s: 10, bs: "4.20~5.04", sk: "12.6~14.0", cl: "2.80~3.36", cr: "5.60~6.44", stat: "14.0~18.2", all: "7.00~8.40", cd: "11.2~12.6" }]
+        };
+
+        function interpolateData(gradeId) {
+            const data = abilityTable[gradeId];
+            if (!data) return [];
+            const start = data[0];
+            const end = data[1];
+            const result = [];
+            for (let i = 1; i <= 10; i++) {
+                const r = (i - 1) / 9;
+                const calc = (s, e) => {
+                    const sv = s.split('~').map(Number);
+                    const ev = e.split('~').map(Number);
+                    return `${(sv[0] + (ev[0] - sv[0]) * r).toFixed(2)}~${(sv[1] + (ev[1] - sv[1]) * r).toFixed(2)}`;
+                };
+                result.push({
+                    s: i, bs: calc(start.bs, end.bs), sk: calc(start.sk, end.sk),
+                    cl: calc(start.cl, end.cl), cr: calc(start.cr, end.cr),
+                    stat: calc(start.stat, end.stat), all: calc(start.all, end.all),
+                    cd: calc(start.cd, end.cd)
+                });
+            }
+            return result;
+        }
+
+        function formatKoreanUnit(num) {
+            if (num === 0) return "0";
+            const units = ["", "만", "억", "조", "경"];
+            let result = [];
+            let unitIdx = 0;
+            while (num > 0) {
+                let chunk = num % 10000;
+                if (chunk > 0) result.push(chunk.toLocaleString() + units[unitIdx]);
+                num = Math.floor(num / 10000);
+                unitIdx++;
+            }
+            return result.reverse().join(" ");
+        }
+
+        function formatShortUnit(num) {
+            if (num === 0) return "";
+            if (num < 10000) return num.toLocaleString();
+            if (num < 100000000) return (num / 10000).toLocaleString() + "만";
+            if (num < 1000000000000) return (num / 100000000).toLocaleString() + "억";
+            return (num / 1000000000000).toLocaleString() + "조";
+        }
+
+        function init() {
+            const container = document.getElementById('grade-container');
+            const guideContainer = document.getElementById('guide-display-container');
+            
+            grades.forEach(grade => {
+                const card = document.createElement('div');
+                card.className = "grade-card overflow-hidden";
+                const stepsHtml = grade.steps.map((step, idx) => `
+                    <div class="flex items-center justify-between p-3 border-b border-gray-50 last:border-0">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" data-gold="${step.gold}" onchange="updateGradeState('${grade.id}')" class="checkbox-custom grade-input-${grade.id}">
+                            <span class="text-sm font-medium text-slate-600">${step.name}</span>
+                        </label>
+                        <span class="text-[10px] font-bold text-slate-400">${step.gold === 0 ? 'FREE' : step.gold.toLocaleString()}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex flex-col p-4 cursor-pointer ${grade.bg}" onclick="toggleGrade('${grade.id}')">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm">${grade.name} ▼</span>
+                            <div class="flex gap-1" onclick="event.stopPropagation()">
+                                <button id="btn-all-${grade.id}" onclick="selectGroup('${grade.id}', true)" class="px-2 py-0.5 btn-group-white text-[10px] font-bold rounded-md">전체</button>
+                                <button onclick="selectGroup('${grade.id}', false)" class="px-2 py-0.5 btn-group-white text-[10px] font-bold rounded-md">해제</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-end h-4">
+                             <span id="grade-summary-${grade.id}" class="text-[10px] font-bold opacity-80"></span>
+                        </div>
+                    </div>
+                    <div id="content-${grade.id}" class="grade-content">
+                        ${stepsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+
+                const guideData = interpolateData(grade.id);
+                if (guideData.length > 0) {
+                    const gSec = document.createElement('div');
+                    gSec.className = "mb-2 rounded-xl border border-gray-100 overflow-hidden";
+                    gSec.innerHTML = `
+                        <button onclick="toggleGuide('${grade.id}')" class="w-full flex justify-between items-center p-3 ${grade.bg} font-bold text-xs">
+                            <span>${grade.name} 등급 수치 (1~10단계)</span>
+                            <span id="guide-arrow-${grade.id}">▶</span>
+                        </button>
+                        <div id="guide-body-${grade.id}" class="hidden scroll-container bg-white">
+                            <table class="guide-table">
+                                <thead>
+                                    <tr>
+                                        <th class="w-8">단</th><th>보공</th><th>스뎀</th><th>쿨감</th><th>크확</th><th class="highlight-stat">주스탯/경드메</th><th>올스탯</th><th>크뎀</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${guideData.map(d => `
+                                        <tr>
+                                            <td class="bg-gray-50 text-slate-400 font-bold">${d.s}</td>
+                                            <td>${d.bs}</td><td>${d.sk}</td><td>${d.cl}</td><td>${d.cr}</td><td class="highlight-stat">${d.stat}</td><td>${d.all}</td><td>${d.cd}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    guideContainer.appendChild(gSec);
+                }
+            });
+        }
+
+        function toggleGrade(id) { document.getElementById(`content-${id}`).classList.toggle('open'); }
+        function toggleGuide(id) {
+            const body = document.getElementById(`guide-body-${id}`);
+            const arrow = document.getElementById(`guide-arrow-${id}`);
+            if(!body) return;
+            const isHidden = body.classList.contains('hidden');
+            if (isHidden) { body.classList.remove('hidden'); arrow.style.transform = 'rotate(90deg)'; }
+            else { body.classList.add('hidden'); arrow.style.transform = 'rotate(0deg)'; }
+        }
+        function toggleAllGuides(show) {
+            grades.forEach(g => {
+                const body = document.getElementById(`guide-body-${g.id}`);
+                const arrow = document.getElementById(`guide-arrow-${g.id}`);
+                if(!body) return;
+                if (show) { body.classList.remove('hidden'); arrow.style.transform = 'rotate(90deg)'; }
+                else { body.classList.add('hidden'); arrow.style.transform = 'rotate(0deg)'; }
+            });
+        }
+        function toggleAll(show) {
+            grades.forEach(g => {
+                const el = document.getElementById(`content-${g.id}`);
+                show ? el.classList.add('open') : el.classList.remove('open');
+            });
+        }
+        function updateGradeState(gradeId) {
+            const inputs = document.querySelectorAll(`.grade-input-${gradeId}`);
+            const btnAll = document.getElementById(`btn-all-${gradeId}`);
+            const summary = document.getElementById(`grade-summary-${gradeId}`);
+            let gradeTotal = 0;
+            const checkedInputs = Array.from(inputs).filter(i => {
+                if(i.checked) gradeTotal += parseInt(i.getAttribute('data-gold'));
+                return i.checked;
+            });
+            const checkedCount = checkedInputs.length;
+            const isAllChecked = checkedCount === inputs.length;
+            const isPartialChecked = checkedCount > 0 && checkedCount < inputs.length;
+            if (gradeTotal > 0) summary.innerText = formatShortUnit(gradeTotal) + " 메소 소모 중";
+            else summary.innerText = "";
+            if (isAllChecked) {
+                btnAll.classList.add('active');
+                btnAll.classList.remove('partial-check');
+                btnAll.innerText = '완료';
+            } else if (isPartialChecked) {
+                btnAll.classList.remove('active');
+                btnAll.classList.add('partial-check');
+                btnAll.innerText = '전체';
+            } else {
+                btnAll.classList.remove('active');
+                btnAll.classList.remove('partial-check');
+                btnAll.innerText = '전체';
+            }
+            updateCalc();
+        }
+        function selectGroup(id, checked) {
+            const inputs = document.querySelectorAll(`.grade-input-${id}`);
+            inputs.forEach(i => i.checked = checked);
+            updateGradeState(id);
+        }
+        function updateCalc() {
+            let total = 0;
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                if (cb.checked) total += parseInt(cb.getAttribute('data-gold'));
+            });
+            document.getElementById('total-gold').innerText = total.toLocaleString();
+            document.getElementById('total-gold-korean').innerText = total > 0 ? formatKoreanUnit(total) + " 메소" : "0 메소";
+        }
+        window.onload = init;
+    </script>
+</body>
+</html>
+
