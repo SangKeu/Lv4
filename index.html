@@ -2,23 +2,84 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초보의 장난감</title>
     <style>
-        body { font-family: sans-serif; line-height: 2; padding: 20px; }
-        a { text-decoration: none; color: blue; font-size: 1.2rem; }
-        a:hover { text-decoration: underline; }
+        :root {
+            --primary-color: #ff7675;
+            --bg-color: #f9f9fb;
+        }
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #2d3436;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .menu-item {
+            margin-bottom: 12px;
+        }
+        .menu-item a {
+            display: block;
+            padding: 15px;
+            text-decoration: none;
+            color: #636e72;
+            background: #f1f2f6;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .menu-item a:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3);
+        }
+        .emoji {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
-    <h1>🛠️ 장난감 목록</h1>
-    <ul>
-        <li><a href="스타포스.html">스타포스 계산기</a></li>
-        <li><a href="스탯효율계산기.html">스탯 효율 계산기</a></li>
-        <li><a href="어빌리티.html">어빌리티</a></li>
-        <li><a href="일일보스.html">일일 보스</a></li>
-        <li><a href="타수계산기.html">타수 계산기</a></li>
-        <li><a href="통합플래너.html">통합 플래너</a></li>
-        <li><a href="혼돈의주문서계산기.html">혼돈의 주문서 계산기</a></li>
+
+<div class="container">
+    <h1>🎮 초보의 장난감</h1>
+    <ul class="menu-list">
+        <li class="menu-item"><a href="통합플래너.html"><span class="emoji">📅</span>통합 플래너</a></li>
+        <li class="menu-item"><a href="어빌리티.html"><span class="emoji">✨</span>어빌리티</a></li>
+        <li class="menu-item"><a href="혼돈의주문서계산기.html"><span class="emoji">📜</span>혼돈의 주문서 계산기</a></li>
+        <li class="menu-item"><a href="스타포스.html"><span class="emoji">⭐</span>스타포스</a></li>
+        <li class="menu-item"><a href="일일보스.html"><span class="emoji">👿</span>일일 보스</a></li>
+        <li class="menu-item"><a href="타수계산기.html"><span class="emoji">⚔️</span>타수 계산기</a></li>
+        <li class="menu-item"><a href="스탯효율계산기.html"><span class="emoji">📊</span>스탯 효율 계산기</a></li>
     </ul>
+</div>
+
 </body>
 </html>
