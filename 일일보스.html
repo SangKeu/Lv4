@@ -21,184 +21,101 @@
         .grade-absolute { color: #00838f; font-weight: bold; }
         .grade-heaven { color: #fbc02d; font-weight: bold; }
         .grade-relic { color: #b71c1c; font-weight: bold; }
+        
+        .label-badge {
+            font-size: 0.7rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background-color: #f3f4f6;
+            color: #6b7280;
+            margin-right: 4px;
+            border: 1px solid #e5e7eb;
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-6">
 
-    <!-- 기존 콘텐츠 영역 -->
-    <div class="max-w-4xl mx-auto mb-8 p-6 bg-white rounded-xl shadow-md">
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">캐릭터 대시보드</h1>
-        <p class="text-gray-600">현재 적용된 일일 보스 단계별 전리품 현황입니다.</p>
+    <!-- 캐릭터 대시보드 영역 -->
+    <div class="max-w-4xl mx-auto mb-6 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
+        <h1 class="text-xl font-bold text-gray-800 mb-1">캐릭터 대시보드</h1>
+        <p class="text-sm text-gray-500">일일 보스 단계별 상세 현황 (세로 최적화 버전)</p>
     </div>
 
     <!-- 일일 보스 섹션 -->
-    <div class="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md">
-        <div class="flex items-center mb-6">
-            <div class="w-2 h-8 bg-blue-600 rounded-full mr-3"></div>
-            <h2 class="text-2xl font-bold text-gray-800">일일 보스 섹션</h2>
+    <div class="max-w-4xl mx-auto p-4 bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="flex flex-col mb-4">
+            <div class="flex items-center mb-1">
+                <div class="w-1.5 h-6 bg-blue-600 rounded-full mr-2"></div>
+                <h2 class="text-lg font-bold text-gray-800">보스 리스트</h2>
+            </div>
+            <!-- 안내 문구 추가 -->
+            <p class="text-xs text-blue-500 ml-3.5 font-medium italic">※ 표기된 등급은 어빌리티 상세수치입니다.</p>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-100 border-b-2 border-gray-200">
-                        <th class="p-3 text-sm font-semibold text-gray-700 w-20">단계</th>
-                        <th class="p-3 text-sm font-semibold text-gray-700">보스명</th>
-                        <th class="p-3 text-sm font-semibold text-gray-700">전리품명</th>
-                        <th class="p-3 text-sm font-semibold text-gray-700">등급/수치</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 text-sm">
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">1</td>
-                        <td class="p-3 font-bold text-gray-900">킹 슬라임</td>
-                        <td class="p-3 text-gray-700">물컹물컹한 신발</td>
-                        <td class="p-3"><span class="text-gray-600">고급10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">2</td>
-                        <td class="p-3 font-bold text-gray-900">알리샤르</td>
-                        <td class="p-3 text-gray-700">이카루스의 망토</td>
-                        <td class="p-3"><span class="grade-rare">레어5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">3</td>
-                        <td class="p-3 font-bold text-gray-900">자쿰</td>
-                        <td class="p-3 text-gray-700">자쿰의 투구</td>
-                        <td class="p-3"><span class="grade-rare">레어10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">4</td>
-                        <td class="p-3 font-bold text-gray-900">픽시맘</td>
-                        <td class="p-3 text-gray-700">여신의 팔찌</td>
-                        <td class="p-3"><span class="grade-epic">에픽5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">5</td>
-                        <td class="p-3 font-bold text-gray-900">마왕 발록</td>
-                        <td class="p-3 text-gray-700">털가죽 신발</td>
-                        <td class="p-3"><span class="grade-epic">에픽10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">6</td>
-                        <td class="p-3 font-bold text-gray-900">반 레온</td>
-                        <td class="p-3 text-gray-700">반 레온의 소울</td>
-                        <td class="p-3"><span class="grade-unique">유니크5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">7</td>
-                        <td class="p-3 font-bold text-gray-900">파풀라투스</td>
-                        <td class="p-3 text-gray-700">파풀라투스 인형</td>
-                        <td class="p-3"><span class="grade-unique">유니크10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">8</td>
-                        <td class="p-3 font-bold text-gray-900">벨룸</td>
-                        <td class="p-3 text-gray-700">벨룸의 투구</td>
-                        <td class="p-3"><span class="grade-legendary">레전드리5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">9</td>
-                        <td class="p-3 font-bold text-gray-900">카웅</td>
-                        <td class="p-3 text-gray-700">카웅 큐브</td>
-                        <td class="p-3"><span class="grade-legendary">레전드리10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">10</td>
-                        <td class="p-3 font-bold text-gray-900">피아누스</td>
-                        <td class="p-3 text-gray-700">피아누스의 소울</td>
-                        <td class="p-3"><span class="grade-relic">유물5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">11</td>
-                        <td class="p-3 font-bold text-gray-900">블러드퀸</td>
-                        <td class="p-3 text-gray-700">블러드퀸 화장대</td>
-                        <td class="p-3"><span class="grade-relic">유물10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">12</td>
-                        <td class="p-3 font-bold text-gray-900">반반</td>
-                        <td class="p-3 text-gray-700">반반 투구</td>
-                        <td class="p-3"><span class="grade-myth">신화5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">13</td>
-                        <td class="p-3 font-bold text-gray-900">피에르</td>
-                        <td class="p-3 text-gray-700">피에르의 인형</td>
-                        <td class="p-3"><span class="grade-myth">신화10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">14</td>
-                        <td class="p-3 font-bold text-gray-900">매그너스</td>
-                        <td class="p-3 text-gray-700">매그너스의 증표</td>
-                        <td class="p-3"><span class="grade-transcend">초월5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">15</td>
-                        <td class="p-3 font-bold text-gray-900">힐라</td>
-                        <td class="p-3 text-gray-700">다크 소울</td>
-                        <td class="p-3"><span class="grade-transcend">초월10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">16</td>
-                        <td class="p-3 font-bold text-gray-900">아카이럼</td>
-                        <td class="p-3 text-gray-700">도미네이터 팬던트</td>
-                        <td class="p-3"><span class="grade-immortal">불멸5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">17</td>
-                        <td class="p-3 font-bold text-gray-900">스우</td>
-                        <td class="p-3 text-gray-700">스우의 정령</td>
-                        <td class="p-3"><span class="grade-immortal">불멸10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">18</td>
-                        <td class="p-3 font-bold text-gray-900">윌</td>
-                        <td class="p-3 text-gray-700">윌의 마크</td>
-                        <td class="p-3"><span class="grade-dominate">지배5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">19</td>
-                        <td class="p-3 font-bold text-gray-900">시그너스</td>
-                        <td class="p-3 text-gray-700">시그너스 엠블럼</td>
-                        <td class="p-3"><span class="grade-dominate">지배10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">20</td>
-                        <td class="p-3 font-bold text-gray-900">세렌</td>
-                        <td class="p-3 text-gray-700">신성검 아소르</td>
-                        <td class="p-3"><span class="grade-absolute">절대5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">21</td>
-                        <td class="p-3 font-bold text-gray-900">가디언 엔젤 슬라임</td>
-                        <td class="p-3 text-gray-700">가디언 엔젤 링</td>
-                        <td class="p-3"><span class="grade-absolute">절대10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">22</td>
-                        <td class="p-3 font-bold text-gray-900">거대골렘</td>
-                        <td class="p-3 text-gray-700">글로리온 황금 문장</td>
-                        <td class="p-3"><span class="grade-heaven">천상5</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">23</td>
-                        <td class="p-3 font-bold text-gray-900">풍신령</td>
-                        <td class="p-3 text-gray-700">풍신령의 혼</td>
-                        <td class="p-3"><span class="grade-heaven">천상10</span></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">24</td>
-                        <td class="p-3 font-bold text-gray-900">듄켈</td>
-                        <td class="p-3 text-gray-700">커맨더 포스 이어링</td>
-                        <td class="p-3 text-gray-400">-</td>
-                    </tr>
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold text-blue-600">25</td>
-                        <td class="p-3 font-bold text-gray-900">검은마법사</td>
-                        <td class="p-3 text-gray-700">창세의 뱃지</td>
-                        <td class="p-3 text-gray-400">-</td>
-                    </tr>
+        <div class="overflow-hidden">
+            <table class="w-full border-collapse">
+                <tbody class="divide-y divide-gray-200">
+                    <script>
+                        const bosses = [
+                            { step: 1, name: "킹 슬라임", item: "물컹물컹한 신발", grade: "고급10", effect: "공 3%", inc: "0.1%", cls: "" },
+                            { step: 2, name: "알리샤르", item: "이카루스의 망토", grade: "레어5", effect: "공 4%", inc: "0.12%", cls: "grade-rare" },
+                            { step: 3, name: "자쿰", item: "자쿰의 투구", grade: "레어10", effect: "공 5%", inc: "0.14%", cls: "grade-rare" },
+                            { step: 4, name: "픽시맘", item: "여신의 팔찌", grade: "에픽5", effect: "공 6%", inc: "0.16%", cls: "grade-epic" },
+                            { step: 5, name: "마왕 발록", item: "털가죽 신발", grade: "에픽10", effect: "공 7%", inc: "0.18%", cls: "grade-epic" },
+                            { step: 6, name: "반 레온", item: "반 레온의 소울", grade: "유니크5", effect: "공 8%", inc: "0.2%", cls: "grade-unique" },
+                            { step: 7, name: "파풀라투스", item: "파풀라투스 인형", grade: "유니크10", effect: "공 9%", inc: "0.22%", cls: "grade-unique" },
+                            { step: 8, name: "벨룸", item: "벨룸의 투구", grade: "레전드리5", effect: "공 10%", inc: "0.24%", cls: "grade-legendary" },
+                            { step: 9, name: "카웅", item: "카웅 큐브", grade: "레전드리10", effect: "공 11%", inc: "0.26%", cls: "grade-legendary" },
+                            { step: 10, name: "피아누스", item: "피아누스의 소울", grade: "유물5", effect: "공 12%", inc: "0.28%", cls: "grade-relic" },
+                            { step: 11, name: "블러드퀸", item: "블러드퀸 화장대", grade: "유물10", effect: "공 13%", inc: "0.3%", cls: "grade-relic" },
+                            { step: 12, name: "반반", item: "반반 투구", grade: "신화5", effect: "공 14%", inc: "0.32%", cls: "grade-myth" },
+                            { step: 13, name: "피에르", item: "피에르의 인형", grade: "신화10", effect: "공 15%", inc: "0.34%", cls: "grade-myth" },
+                            { step: 14, name: "매그너스", item: "매그너스의 증표", grade: "초월5", effect: "공 16%", inc: "0.36%", cls: "grade-transcend" },
+                            { step: 15, name: "힐라", item: "다크 소울", grade: "초월10", effect: "공 17%", inc: "0.38%", cls: "grade-transcend" },
+                            { step: 16, name: "아카이럼", item: "도미네이터 팬던트", grade: "불멸5", effect: "공 18%", inc: "0.4%", cls: "grade-immortal" },
+                            { step: 17, name: "스우", item: "스우의 정령", grade: "불멸10", effect: "공 19%", inc: "0.43%", cls: "grade-immortal" },
+                            { step: 18, name: "윌", item: "윌의 마크", grade: "지배5", effect: "공 20%", inc: "0.46%", cls: "grade-dominate" },
+                            { step: 19, name: "시그너스", item: "시그너스 엠블럼", grade: "지배10", effect: "공 21%", inc: "0.49%", cls: "grade-dominate" },
+                            { step: 20, name: "세렌", item: "신성검 아소르", grade: "절대5", effect: "공 22%", inc: "0.52%", cls: "grade-absolute" },
+                            { step: 21, name: "가디언 엔젤 슬라임", item: "가디언 엔젤 링", grade: "절대10", effect: "공 23%", inc: "0.56%", cls: "grade-absolute" },
+                            { step: 22, name: "거대골렘", item: "글로리온 황금 문장", grade: "천상5", effect: "공 24%", inc: "0.60%", cls: "grade-heaven" },
+                            { step: 23, name: "풍신령", item: "풍신령의 혼", grade: "천상10", effect: "공 25%", inc: "0.64%", cls: "grade-heaven" },
+                            { step: 24, name: "듄켈", item: "커맨더 포스 이어링", grade: "X", effect: "공 26%", inc: "0.68%", cls: "text-gray-400 font-bold" },
+                            { step: 25, name: "검은마법사", item: "창세의 뱃지", grade: "X", effect: "공 27%", inc: "0.72%", cls: "text-gray-400 font-bold" }
+                        ];
+
+                        bosses.forEach(b => {
+                            document.write(`
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="py-3 px-2 w-10 text-center align-top pt-4">
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-xs font-bold text-gray-500">${b.step}</span>
+                                    </td>
+                                    <td class="py-3 px-2">
+                                        <div class="flex flex-col gap-1">
+                                            <div class="flex items-center flex-wrap gap-x-2">
+                                                <span class="font-bold text-gray-900">${b.name}</span>
+                                                <span class="text-xs text-gray-500">| ${b.item}</span>
+                                            </div>
+                                            <div class="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1">
+                                                <div class="flex items-center">
+                                                    <span class="label-badge">등급</span>
+                                                    <span class="${b.cls} text-xs">${b.grade}</span>
+                                                </div>
+                                                <div class="flex items-center border-l pl-3 border-gray-200">
+                                                    <span class="label-badge">효과</span>
+                                                    <span class="text-xs text-gray-700 font-medium">${b.effect}</span>
+                                                </div>
+                                                <div class="flex items-center border-l pl-3 border-gray-200">
+                                                    <span class="label-badge">증가</span>
+                                                    <span class="text-xs text-red-500 font-bold">${b.inc}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    </script>
                 </tbody>
             </table>
         </div>
