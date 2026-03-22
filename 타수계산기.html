@@ -69,6 +69,19 @@
                     </div>
                     
                     <div class="space-y-3">
+                        <!-- 룬 쿨타임 감소 -->
+                        <div>
+                            <label class="block text-[11px] text-gray-600 mb-1 font-bold text-indigo-600">💎 룬 쿨타임 감소 (전직 스킬 전용 적용)</label>
+                            <select id="runeCooltime" class="w-full p-2 border border-indigo-300 rounded bg-white text-sm font-semibold">
+                                <option value="0">룬 없음 (0.00s)</option>
+                                <option value="0.02">최하급 (-0.02s)</option>
+                                <option value="0.04">하급 (-0.04s)</option>
+                                <option value="0.06">중급 (-0.06s)</option>
+                                <option value="0.08">상급 (-0.08s)</option>
+                                <option value="0.1">최상급 (-0.10s)</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label class="block text-[11px] text-gray-600 mb-1">① 직업 기본 타수 (스킬 차수)</label>
                             <select id="skillTier" class="w-full p-2 border border-gray-300 rounded bg-white text-sm">
@@ -115,7 +128,7 @@
 
                     <div class="p-3 bg-white/60 rounded-lg border border-blue-200">
                         <div class="flex justify-between text-[11px] mb-1">
-                            <span class="text-gray-500">계산 주기 (쿨감반영):</span>
+                            <span class="text-gray-500">계산 주기 (쿨감+룬반영):</span>
                             <span id="displayTierInterval" class="font-bold text-blue-700">0.900s</span>
                         </div>
                         <div class="flex justify-between text-[11px]">
@@ -155,7 +168,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] text-gray-600 mb-1">랭크 (주기 감소)</label>
+                            <label class="block text-[11px] text-gray-600 mb-1">랭크 (고정 주기 감소)</label>
                             <select id="extraSkillRank" class="w-full p-2 border border-gray-300 rounded bg-white text-xs font-bold">
                                 <option value="0">E 랭크 (기본)</option>
                                 <option value="0.03">D 랭크 (-0.03s)</option>
@@ -169,7 +182,7 @@
 
                     <div class="p-3 bg-white/60 rounded-lg border border-emerald-200">
                         <div class="flex justify-between text-[11px] mb-1">
-                            <span class="text-gray-500">계산 주기:</span>
+                            <span class="text-gray-500">계산 주기 (쿨감+랭크반영):</span>
                             <span id="displayExtraInterval" class="font-bold text-emerald-700">1.000s</span>
                         </div>
                         <div class="flex justify-between text-[11px]">
@@ -177,7 +190,6 @@
                             <span id="displayGradeHits" class="font-bold text-emerald-700">8타</span>
                         </div>
                     </div>
-                    <p class="text-[9px] text-emerald-600 font-semibold">* 타수 = 등급 + 성급 + <span class="text-red-500 font-bold">초월 + 패시브</span> 가 모두 적용됩니다.</p>
                 </div>
 
                 <!-- 3. 7차 패시브 (오라/정령/축복) -->
@@ -206,30 +218,29 @@
                     </div>
 
                     <div class="p-3 bg-white/60 rounded-lg border border-purple-200 space-y-2">
-                        <!-- 오라 상세 디스플레이 -->
+                        <!-- 오라 상세 -->
                         <div class="border-b border-indigo-100 pb-2">
                             <div class="flex justify-between text-[11px] mb-1">
                                 <span class="text-gray-500 text-indigo-600">오라 계산 주기:</span>
                                 <span id="displayAuraIntervalInner" class="font-bold text-indigo-700">1.000s</span>
                             </div>
                             <div class="flex justify-between text-[11px]">
-                                <span class="text-gray-500 text-indigo-600">오라 1회 타수 (축복포함):</span>
+                                <span class="text-gray-500 text-indigo-600">오라 1회 타수:</span>
                                 <span id="displayAuraHits" class="font-bold text-indigo-700">0타</span>
                             </div>
                         </div>
-                        <!-- 정령 상세 디스플레이 -->
+                        <!-- 정령 상세 -->
                         <div>
                             <div class="flex justify-between text-[11px] mb-1">
                                 <span class="text-gray-500 text-purple-600">정령 계산 주기:</span>
                                 <span id="displaySpiritIntervalInner" class="font-bold text-purple-700">1.000s</span>
                             </div>
                             <div class="flex justify-between text-[11px]">
-                                <span class="text-gray-500 text-purple-600">정령 1회 타수 (축복포함):</span>
+                                <span class="text-gray-500 text-purple-600">정령 1회 타수:</span>
                                 <span id="displaySpiritHits" class="font-bold text-purple-700">0타</span>
                             </div>
                         </div>
                     </div>
-                    <p class="text-[9px] text-purple-600 font-semibold">* 오라/정령은 패시브와 초월 타수가 여전히 제외됩니다.</p>
                 </div>
             </div>
 
@@ -253,6 +264,7 @@
         const elements = {
             skillTier: document.getElementById('skillTier'),
             cooltime: document.getElementById('cooltimeReduction'),
+            runeCooltime: document.getElementById('runeCooltime'),
             trans: document.getElementById('transLevel'),
             aura: document.getElementById('auraLevel'),
             spirit: document.getElementById('spiritLevel'),
@@ -280,7 +292,6 @@
             spiritPart: document.getElementById('spiritPart')
         };
 
-        // 오라/정령 기본 스탯 정의 (1lv=6타, 10lv=15타)
         function getSpecialStats(level) {
             if (level === 0) return { interval: 1.0, hits: 0 };
             const interval = 1.0 - ((level - 1) * 0.02);
@@ -319,30 +330,37 @@
         }
 
         function calculate() {
-            // 공통 변수
             const passiveHits = parseInt(elements.passive.value) || 0;
             const transHits = parseInt(elements.trans.value) || 0;
             const blessingLv = parseInt(elements.blessing.value) || 0;
             const blessingReduc = blessingLv * 0.01;
             const blessingBonusHits = Math.floor(blessingLv / 5);
+            
+            // 공통 쿨타임 감소 (%)
+            const commonCooltimeRatio = 1 - (Math.min(parseInt(elements.cooltime.value) || 0, 50) / 100);
+            
+            // 룬 쿨타임 감소 (고정 수치)
+            const runeReduction = parseFloat(elements.runeCooltime.value) || 0;
 
-            // 1. 전직 스킬 (패시브 + 초월 적용)
+            // 1. 전직 스킬 (쿨감비율 + 룬 고정 차감 적용)
             const baseHits = parseInt(elements.skillTier.value);
-            const tInterval = 0.9 * (1 - (Math.min(parseInt(elements.cooltime.value), 50) / 100));
+            const tInterval = Math.max((0.9 * commonCooltimeRatio) - runeReduction, 0.001); 
             const tHitsPerAction = baseHits + transHits + passiveHits; 
-            const tTotalActions = Math.floor(60 / Math.max(tInterval, 0.001));
+            const tTotalActions = Math.floor(60 / tInterval);
             const tFinalHits = tTotalActions * tHitsPerAction;
             
             elements.displayTierInterval.innerText = tInterval.toFixed(3) + 's';
             elements.displayTierHits.innerText = tHitsPerAction + '타';
 
-            // 2. 공격 스킬 2 (성급 + 초월 + 패시브 적용)
+            // 2. 공격 스킬 2 (랭크 차감은 고정 수치 감소로 계산)
             const internalBaseInterval = 1.0;
             const gradeBaseHits = parseInt(elements.extraSkillGrade.value) || 8; 
-            const rankReduction = parseFloat(elements.extraSkillRank.value) || 0;
+            const rankFixedReduction = parseFloat(elements.extraSkillRank.value) || 0;
             const starBonusHits = parseInt(elements.extraSkillStars.value) || 0;
             
-            const finalExtraInterval = Math.max(internalBaseInterval - rankReduction, 0.001);
+            // 공식: (기본주기 * 쿨감비율) - 랭크 고정차감
+            // 룬과 마찬가지로 랭크 수치가 최종 주기에서 직접 빠집니다.
+            const finalExtraInterval = Math.max((internalBaseInterval * commonCooltimeRatio) - rankFixedReduction, 0.001);
             const extraHitsPerAction = gradeBaseHits + starBonusHits + transHits + passiveHits; 
             const extraFinalHits = Math.floor(60 / finalExtraInterval) * extraHitsPerAction;
 
