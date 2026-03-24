@@ -5,81 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초보의 장난감</title>
     <style>
-        :root {
-            --primary-color: #ff7675;
-            --bg-color: #f9f9fb;
-        }
+        /* 기본 스타일 및 다크 모드 배경 */
         body {
-            font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-            background-color: var(--bg-color);
             margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* 기본 배경 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: #2d3436;
         }
-        .container {
-            width: 90%;
-            max-width: 400px;
+
+        /* 암호 입력 화면 스타일 */
+        #auth-container {
+            text-align: center;
             background: white;
-            padding: 30px;
+            padding: 40px 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 350px;
+        }
+
+        #auth-container h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        #pw-input {
+            width: 80%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+        }
+
+        #auth-btn {
+            width: 90%;
+            padding: 15px;
+            background-color: #ff7675;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 메인 콘텐츠 (기존 디자인 적용) */
+        #main-content {
+            display: none; /* 인증 전에는 숨김 */
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
             text-align: center;
         }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
         h1 {
             font-size: 24px;
+            color: #333;
             margin-bottom: 30px;
-            color: var(--primary-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
         }
+
         .menu-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
+
         .menu-item {
-            margin-bottom: 12px;
-        }
-        .menu-item a {
             display: block;
-            padding: 15px;
+            padding: 18px;
+            background-color: #f1f3f5;
+            color: #495057;
             text-decoration: none;
-            color: #636e72;
-            background: #f1f2f6;
             border-radius: 12px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, background-color 0.2s;
         }
-        .menu-item a:hover {
-            background: var(--primary-color);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255, 118, 117, 0.3);
-        }
-        .emoji {
-            margin-right: 8px;
+
+        .menu-item:active {
+            transform: scale(0.98);
+            background-color: #e9ecef;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🎮 초보의 장난감</h1>
-    <ul class="menu-list">
-        <li class="menu-item"><a href="통합플래너.html"><span class="emoji">📅</span>통합 플래너</a></li>
-        <li class="menu-item"><a href="어빌리티.html"><span class="emoji">✨</span>어빌리티</a></li>
-        <li class="menu-item"><a href="혼돈의주문서계산기.html"><span class="emoji">📜</span>혼돈의 주문서 계산기</a></li>
-        <li class="menu-item"><a href="스타포스.html"><span class="emoji">⭐</span>스타포스</a></li>
-        <li class="menu-item"><a href="일일보스.html"><span class="emoji">👿</span>일일 보스</a></li>
-        <li class="menu-item"><a href="타수계산기.html"><span class="emoji">⚔️</span>타수 계산기</a></li>
-        <li class="menu-item"><a href="스탯효율계산기.html"><span class="emoji">📊</span>스탯 효율 계산기</a></li>
-    </ul>
-</div>
+    <div id="auth-container">
+        <h2>🔒 접속 암호</h2>
+        <p style="color: #666; font-size: 14px;">관리자 인증이 필요합니다.</p>
+        <input type="password" id="pw-input" placeholder="비밀번호 입력" autofocus>
+        <button id="auth-btn" onclick="checkAuth()">확인</button>
+    </div>
+
+    <div id="main-content">
+        <div class="container">
+            <h1>🎮 초보의 장난감</h1>
+            
+            <div class="menu-list">
+                <a href="통합플래너.html" class="menu-item">📅 통합 플래너</a>
+                <a href="어빌리티.html" class="menu-item">✨ 어빌리티</a>
+                <a href="혼돈의주문서계산기.html" class="menu-item">📜 혼돈의 주문서 계산기</a>
+                <a href="스타포스.html" class="menu-item">⭐ 스타포스</a>
+                <a href="일일보스.html" class="menu-item">😈 일일 보스</a>
+                <a href="타수계산기.html" class="menu-item">⚔️ 타수 계산기</a>
+                <a href="스탯효율계산기.html" class="menu-item">📊 스탯 효율 계산기</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkAuth() {
+            const input = document.getElementById('pw-input').value;
+            const key = "510423"; // 설정하신 비밀번호
+
+            if (input === key) {
+                // 암호 일치 시 화면 전환
+                document.getElementById('auth-container').style.display = 'none';
+                document.body.style.backgroundColor = "#f8f9fa"; // 배경색 조정
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                alert("비밀번호가 올바르지 않습니다.");
+                document.getElementById('pw-input').value = "";
+            }
+        }
+
+        // 엔터키 지원
+        document.getElementById('pw-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkAuth();
+            }
+        });
+    </script>
 
 </body>
 </html>
