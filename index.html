@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초보의 장난감</title>
     <style>
-        /* 기본 레이아웃 및 다크 모드 */
+        /* 다크 모드 및 레이아웃 */
         body {
             margin: 0; padding: 0;
             background-color: #121212; color: #e0e0e0;
@@ -13,7 +13,7 @@
             display: flex; justify-content: center; align-items: center; min-height: 100vh;
         }
 
-        /* [1] 메인 접속 화면 (인증 전) */
+        /* [1] 메인 접속 화면 */
         #auth-screen {
             text-align: center; background: #1e1e1e; padding: 40px 30px;
             border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -33,7 +33,7 @@
             background: #ff7675; color: white; font-size: 16px; font-weight: bold; cursor: pointer;
         }
 
-        /* [2] 메인 앱 화면 (인증 후) */
+        /* [2] 메인 앱 화면 */
         #main-app {
             display: none; width: 90%; max-width: 400px; padding: 20px;
         }
@@ -55,6 +55,12 @@
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
+        /* 강조 스타일 (통합 플래너) */
+        .highlight {
+            background-color: #383838;
+            border: 1px solid #4a90e2;
+        }
+
         .menu-item:active { transform: scale(0.97); background-color: #3d3d3d; }
 
         .footer-info { margin-top: 25px; font-size: 12px; color: #555; }
@@ -73,6 +79,8 @@
             <h1>🎮 초보의 장난감</h1>
             
             <div class="menu-list">
+                <button class="menu-item highlight" onclick="location.href='통합플래너.html'">📅 통합 플래너</button>
+
                 <button class="menu-item" onclick="checkSubAuth('혼돈의주문서계산기', '0620')">📜 혼돈의 주문서 계산기</button>
                 <button class="menu-item" onclick="checkSubAuth('스타포스', '0620')">⭐ 스타포스</button>
                 
@@ -80,7 +88,6 @@
                 <button class="menu-item" onclick="checkSubAuth('타수계산기', '0527')">⚔️ 타수 계산기</button>
                 <button class="menu-item" onclick="checkSubAuth('스탯효율계산기', '0527')">📊 스탯 효율 계산기</button>
                 
-                <button class="menu-item" onclick="location.href='통합플래너.html'">📅 통합 플래너</button>
                 <button class="menu-item" onclick="location.href='일일보스.html'">😈 일일 보스</button>
             </div>
 
@@ -89,7 +96,7 @@
     </div>
 
     <script>
-        // 1. 메인 통합 인증 함수
+        // 1. 메인 통합 인증 (510423)
         function checkMainAuth() {
             const input = document.getElementById('main-pw-input').value;
             const mainKey = "510423";
@@ -103,11 +110,11 @@
             }
         }
 
-        // 2. 메뉴별 개별 인증 함수
+        // 2. 메뉴별 개별 인증 (0620, 0527)
         function checkSubAuth(fileName, correctPw) {
             const userInput = prompt(fileName + " 접속 암호를 입력하세요.");
 
-            if (userInput === null) return; // 취소 클릭 시
+            if (userInput === null) return; 
 
             if (userInput === correctPw) {
                 location.href = fileName + ".html";
