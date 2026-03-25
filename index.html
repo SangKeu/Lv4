@@ -5,117 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>초보의 장난감</title>
     <style>
-        /* 다크 모드 및 기본 배경 */
+        /* 기본 레이아웃 및 다크 모드 */
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #121212; /* 어두운 배경 */
-            color: #e0e0e0;
+            margin: 0; padding: 0;
+            background-color: #121212; color: #e0e0e0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
         }
 
-        /* 메인 컨테이너 */
+        /* [1] 메인 접속 화면 (인증 전) */
+        #auth-screen {
+            text-align: center; background: #1e1e1e; padding: 40px 30px;
+            border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 90%; max-width: 350px;
+        }
+
+        #auth-screen h2 { margin-top: 0; color: #fff; font-size: 20px; }
+
+        input[type="password"] {
+            width: 85%; padding: 15px; margin: 20px 0;
+            border: none; border-radius: 12px; background: #333;
+            color: #fff; font-size: 18px; text-align: center; outline: none;
+        }
+
+        .login-btn {
+            width: 95%; padding: 15px; border: none; border-radius: 12px;
+            background: #ff7675; color: white; font-size: 16px; font-weight: bold; cursor: pointer;
+        }
+
+        /* [2] 메인 앱 화면 (인증 후) */
+        #main-app {
+            display: none; width: 90%; max-width: 400px; padding: 20px;
+        }
+
         .container {
-            width: 90%;
-            max-width: 400px;
-            background-color: #1e1e1e; /* 약간 더 밝은 회색 섹션 */
-            padding: 40px 25px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background-color: #1e1e1e; padding: 30px 20px;
+            border-radius: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             text-align: center;
         }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
+        h1 { font-size: 22px; color: #fff; margin-bottom: 25px; }
 
-        /* 메뉴 리스트 */
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .menu-list { display: flex; flex-direction: column; gap: 12px; }
 
-        /* 버튼 디자인 (다크 모드용) */
         .menu-item {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            background-color: #2c2c2c;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            width: 100%; padding: 18px; border: none; border-radius: 15px;
+            background-color: #2c2c2c; color: #ffffff; font-size: 16px;
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .menu-item:hover {
-            background-color: #3d3d3d;
-        }
+        .menu-item:active { transform: scale(0.97); background-color: #3d3d3d; }
 
-        .menu-item:active {
-            transform: scale(0.97);
-            background-color: #444444;
-        }
-
-        /* 하단 텍스트 */
-        .footer-info {
-            margin-top: 25px;
-            font-size: 12px;
-            color: #666;
-        }
+        .footer-info { margin-top: 25px; font-size: 12px; color: #555; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🎮 초보의 장난감</h1>
-        
-        <div class="menu-list">
-            <button class="menu-item" onclick="moveTo('통합플래너')">📅 통합 플래너</button>
-            <button class="menu-item" onclick="moveTo('어빌리티')">✨ 어빌리티</button>
-            <button class="menu-item" onclick="moveTo('혼돈의주문서계산기')">📜 혼돈의 주문서 계산기</button>
-            <button class="menu-item" onclick="moveTo('스타포스')">⭐ 스타포스</button>
-            <button class="menu-item" onclick="moveTo('일일보스')">😈 일일 보스</button>
-            <button class="menu-item" onclick="moveTo('타수계산기')">⚔️ 타수 계산기</button>
-            <button class="menu-item" onclick="moveTo('스탯효율계산기')">📊 스탯 효율 계산기</button>
-        </div>
+    <div id="auth-screen">
+        <h2>🔒 관리자 접속</h2>
+        <input type="password" id="main-pw-input" placeholder="통합 암호 입력" autofocus>
+        <button class="login-btn" onclick="checkMainAuth()">확인</button>
+    </div>
 
-        <div class="footer-info">전용 암호로 보호되고 있습니다.</div>
+    <div id="main-app">
+        <div class="container">
+            <h1>🎮 초보의 장난감</h1>
+            
+            <div class="menu-list">
+                <button class="menu-item" onclick="checkSubAuth('혼돈의주문서계산기', '0620')">📜 혼돈의 주문서 계산기</button>
+                <button class="menu-item" onclick="checkSubAuth('스타포스', '0620')">⭐ 스타포스</button>
+                
+                <button class="menu-item" onclick="checkSubAuth('어빌리티', '0527')">✨ 어빌리티</button>
+                <button class="menu-item" onclick="checkSubAuth('타수계산기', '0527')">⚔️ 타수 계산기</button>
+                <button class="menu-item" onclick="checkSubAuth('스탯효율계산기', '0527')">📊 스탯 효율 계산기</button>
+                
+                <button class="menu-item" onclick="location.href='통합플래너.html'">📅 통합 플래너</button>
+                <button class="menu-item" onclick="location.href='일일보스.html'">😈 일일 보스</button>
+            </div>
+
+            <div class="footer-info">보안 접속 모드 활성화 중</div>
+        </div>
     </div>
 
     <script>
-        // 설정하신 공통 비밀번호
-        const SECRET_KEY = "510423";
+        // 1. 메인 통합 인증 함수
+        function checkMainAuth() {
+            const input = document.getElementById('main-pw-input').value;
+            const mainKey = "510423";
 
-        function moveTo(pageName) {
-            // 브라우저 팝업창으로 비밀번호 입력받기
-            const userInput = prompt("접속 암호를 입력해 주세요.");
-
-            if (userInput === null) return; // '취소'를 눌렀을 때
-
-            if (userInput === SECRET_KEY) {
-                // 성공 시 해당 .html 파일로 이동
-                location.href = pageName + ".html";
+            if (input === mainKey) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
             } else {
-                alert("암호가 올바르지 않습니다.");
+                alert("통합 암호가 틀렸습니다.");
+                document.getElementById('main-pw-input').value = "";
             }
         }
+
+        // 2. 메뉴별 개별 인증 함수
+        function checkSubAuth(fileName, correctPw) {
+            const userInput = prompt(fileName + " 접속 암호를 입력하세요.");
+
+            if (userInput === null) return; // 취소 클릭 시
+
+            if (userInput === correctPw) {
+                location.href = fileName + ".html";
+            } else {
+                alert("개별 암호가 올바르지 않습니다.");
+            }
+        }
+
+        // 엔터키 지원
+        document.getElementById('main-pw-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkMainAuth();
+        });
     </script>
 
 </body>
