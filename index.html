@@ -15,7 +15,7 @@
 
         /* [1] 메인 접속 화면 */
         #auth-screen {
-            display: block; /* 초기 상태 */
+            display: block;
             text-align: center; background: #1e1e1e; padding: 40px 30px;
             border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 90%; max-width: 350px;
@@ -36,7 +36,7 @@
 
         /* [2] 메인 앱 화면 */
         #main-app {
-            display: none; /* 초기에는 숨김 */
+            display: none;
             width: 90%; max-width: 400px; padding: 20px;
         }
 
@@ -65,7 +65,6 @@
             background-color: #2c2c2c; color: #ffffff; font-size: 16px;
             font-weight: 600; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-decoration: none; /* 링크 스타일 제거 */
         }
 
         /* 강조 스타일 (통합 플래너) */
@@ -91,7 +90,7 @@
         <div class="container">
             <div class="top-bar">
                 <button class="logout-btn" onclick="logout()">접속 종료</button>
-                <span style="font-size: 11px; color: #4a90e2;">인증 유지 중 ●</span>
+                <span style="font-size: 11px; color: #4a90e2;">보안 연결됨 ●</span>
             </div>
 
             <h1>🎮 초보의 장난감</h1>
@@ -114,26 +113,22 @@
     </div>
 
     <script>
-        // 페이지 로드 시 실행: 기존 인증 기록이 있는지 확인
+        // 페이지 로드 시 메인 인증 여부 확인
         window.onload = function() {
             if (sessionStorage.getItem("isMainAuth") === "true") {
                 showMainApp();
             }
         };
 
-        // 메인 화면 보여주기 함수
         function showMainApp() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
         }
 
-        // 1. 메인 통합 인증
+        // 1. 메인 통합 인증 (369369)
         function checkMainAuth() {
             const input = document.getElementById('main-pw-input').value;
-            const mainKey = "369369"; // 설정하신 비밀번호
-
-            if (input === mainKey) {
-                // 세션 스토리지에 인증 정보 저장 (브라우저 탭 닫기 전까지 유지)
+            if (input === "369369") {
                 sessionStorage.setItem("isMainAuth", "true");
                 showMainApp();
             } else {
@@ -142,24 +137,33 @@
             }
         }
 
-        // 로그아웃 기능 (다시 암호창을 보고 싶을 때)
-        function logout() {
-            if(confirm("인증 정보를 삭제하고 종료할까요?")) {
-                sessionStorage.removeItem("isMainAuth");
-                location.reload();
+        // 2. 메뉴별 개별 인증 (0620, 0527) - 한 번 입력하면 기억함
+        function checkSubAuth(fileName, correctPw) {
+            // 이미 이 암호(그룹)에 대해 인증을 받았는지 확인
+            const authKey = "subAuth_" + correctPw;
+            
+            if (sessionStorage.getItem(authKey) === "true") {
+                // 이미 인증 받았다면 바로 이동
+                location.href = fileName + ".html";
+            } else {
+                // 인증 기록이 없다면 새로 질문
+                const userInput = prompt(fileName + " 접속 암호를 입력하세요.");
+                if (userInput === null) return; 
+
+                if (userInput === correctPw) {
+                    sessionStorage.setItem(authKey, "true"); // 해당 암호 그룹 인증 성공 저장
+                    location.href = fileName + ".html";
+                } else {
+                    alert("개별 암호가 올바르지 않습니다.");
+                }
             }
         }
 
-        // 2. 메뉴별 개별 인증
-        function checkSubAuth(fileName, correctPw) {
-            const userInput = prompt(fileName + " 접속 암호를 입력하세요.");
-
-            if (userInput === null) return; 
-
-            if (userInput === correctPw) {
-                location.href = fileName + ".html";
-            } else {
-                alert("개별 암호가 올바르지 않습니다.");
+        // 전체 로그아웃 (모든 인증 정보 삭제)
+        function logout() {
+            if(confirm("모든 인증 정보를 삭제하고 종료할까요?")) {
+                sessionStorage.clear(); // 모든 세션 저장 정보 삭제
+                location.reload();
             }
         }
 
