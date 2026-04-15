@@ -15,6 +15,7 @@
 
         /* [1] 메인 접속 화면 */
         #auth-screen {
+            display: block; /* 초기 상태 */
             text-align: center; background: #1e1e1e; padding: 40px 30px;
             border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 90%; max-width: 350px;
@@ -35,7 +36,8 @@
 
         /* [2] 메인 앱 화면 */
         #main-app {
-            display: none; width: 90%; max-width: 400px; padding: 20px;
+            display: none; /* 초기에는 숨김 */
+            width: 90%; max-width: 400px; padding: 20px;
         }
 
         .container {
@@ -44,7 +46,17 @@
             text-align: center;
         }
 
-        h1 { font-size: 22px; color: #fff; margin-bottom: 25px; }
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding: 0 5px;
+        }
+
+        .logout-btn {
+            background: #333; border: none; color: #888; 
+            padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;
+        }
+
+        h1 { font-size: 22px; color: #fff; margin-bottom: 25px; margin-top: 0; }
 
         .menu-list { display: flex; flex-direction: column; gap: 12px; }
 
@@ -53,6 +65,7 @@
             background-color: #2c2c2c; color: #ffffff; font-size: 16px;
             font-weight: 600; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; /* 링크 스타일 제거 */
         }
 
         /* 강조 스타일 (통합 플래너) */
@@ -76,6 +89,11 @@
 
     <div id="main-app">
         <div class="container">
+            <div class="top-bar">
+                <button class="logout-btn" onclick="logout()">접속 종료</button>
+                <span style="font-size: 11px; color: #4a90e2;">인증 유지 중 ●</span>
+            </div>
+
             <h1>🎮 초보의 장난감</h1>
             
             <div class="menu-list">
@@ -96,21 +114,43 @@
     </div>
 
     <script>
-        // 1. 메인 통합 인증 (510423)
+        // 페이지 로드 시 실행: 기존 인증 기록이 있는지 확인
+        window.onload = function() {
+            if (sessionStorage.getItem("isMainAuth") === "true") {
+                showMainApp();
+            }
+        };
+
+        // 메인 화면 보여주기 함수
+        function showMainApp() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+        }
+
+        // 1. 메인 통합 인증
         function checkMainAuth() {
             const input = document.getElementById('main-pw-input').value;
-            const mainKey = "369369";
+            const mainKey = "369369"; // 설정하신 비밀번호
 
             if (input === mainKey) {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
+                // 세션 스토리지에 인증 정보 저장 (브라우저 탭 닫기 전까지 유지)
+                sessionStorage.setItem("isMainAuth", "true");
+                showMainApp();
             } else {
                 alert("통합 암호가 틀렸습니다.");
                 document.getElementById('main-pw-input').value = "";
             }
         }
 
-        // 2. 메뉴별 개별 인증 (0620, 0527)
+        // 로그아웃 기능 (다시 암호창을 보고 싶을 때)
+        function logout() {
+            if(confirm("인증 정보를 삭제하고 종료할까요?")) {
+                sessionStorage.removeItem("isMainAuth");
+                location.reload();
+            }
+        }
+
+        // 2. 메뉴별 개별 인증
         function checkSubAuth(fileName, correctPw) {
             const userInput = prompt(fileName + " 접속 암호를 입력하세요.");
 
